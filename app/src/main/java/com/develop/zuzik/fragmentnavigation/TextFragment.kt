@@ -54,7 +54,7 @@ class TextFragment : Fragment() {
         fragmentTag.text = text
         pushFragment.setOnClickListener {
             if (context is NavigationContainer) {
-                (context as NavigationContainer).addFragmentAboveChild(this, TextFragment.create(nextFragmentTitle.text.toString()))
+                (context as NavigationContainer).pushChild(TextFragment.create(nextFragmentTitle.text.toString()))
             }
         }
         startActivity.setOnClickListener {
@@ -69,7 +69,7 @@ class TextFragment : Fragment() {
             if (context is NavigationContainer) {
                 val fragment = ResultFragment.create()
                 fragment.setTargetFragment(this, 3)
-                (context as NavigationContainer).addFragmentAboveChild(this, fragment)
+                (context as NavigationContainer).pushChild(fragment)
             }
         }
         startBottomSheet.setOnClickListener {

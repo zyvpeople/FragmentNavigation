@@ -1,13 +1,13 @@
 package com.develop.zuzik.fragmentnavigation
 
-import java.io.Serializable
+import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.FragmentFactory
 
 /**
  * User: zuzik
  * Date: 12/24/16
  */
 
-class TextFragmentFactory(private val text: String) : Serializable {
+class TextFragmentFactory(private val text: String) : FragmentFactory {
 
-    fun create() = TextFragment.create(text)
+    override fun create() = TextFragment.create(text)
 }

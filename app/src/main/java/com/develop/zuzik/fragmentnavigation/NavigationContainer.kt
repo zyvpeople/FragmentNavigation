@@ -7,5 +7,5 @@ import android.support.v4.app.Fragment
  * Date: 12/22/16
  */
 interface NavigationContainer {
-    fun addFragmentAboveChild(above: Fragment, what: Fragment)
+    fun pushChild(child: Fragment)
 }
