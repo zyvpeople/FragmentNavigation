@@ -3,6 +3,8 @@ package com.develop.zuzik.fragmentnavigation
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import com.develop.zuzik.fragmentnavigation.push_strategy.AddDetachPushStrategy
+import com.develop.zuzik.fragmentnavigation.push_strategy.ReplacePushStrategy
 import kotlinx.android.synthetic.main.activity_main_pager.*
 
 class MainActivity : AppCompatActivity(), NavigationContainer {
@@ -12,7 +14,7 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_pager)
-        adapter = StackFragmentPagerAdapter(supportFragmentManager, Array(3, { TextFragmentFactory("${it}0") }))
+        adapter = StackFragmentPagerAdapter(supportFragmentManager, ReplacePushStrategy(), Array(3, { TextFragmentFactory("${it}0") }))
         viewPager.adapter = adapter
 
 //        setContentView(R.layout.activity_main)

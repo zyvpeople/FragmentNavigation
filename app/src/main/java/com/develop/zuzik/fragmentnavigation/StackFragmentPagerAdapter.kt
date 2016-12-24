@@ -5,13 +5,16 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.ViewGroup
+import com.develop.zuzik.fragmentnavigation.push_strategy.PushStrategy
 
 /**
  * User: zuzik
  * Date: 12/24/16
  */
 
-class StackFragmentPagerAdapter(private val fragmentManager: FragmentManager, private val factories: Array<TextFragmentFactory>) : FragmentPagerAdapter(fragmentManager) {
+class StackFragmentPagerAdapter(private val fragmentManager: FragmentManager,
+                                private val pushStrategy: PushStrategy,
+                                private val factories: Array<TextFragmentFactory>) : FragmentPagerAdapter(fragmentManager) {
 
     private val tags = SparseArray<String>()
 
@@ -34,24 +37,9 @@ class StackFragmentPagerAdapter(private val fragmentManager: FragmentManager, pr
         super.destroyItem(container, position, `object`)
     }
 
-    fun pushFragment(fragment: Fragment, position: Int) {
-        val container = fragmentManager.findFragmentByTag(tags[position]) as ContainerFragment
-        container
-                .childFragmentManager
-                .beginTransaction()
-                .replace(container.placeholderId(), fragment)
-                .addToBackStack(null)
-                .commit()
-    }
-
     fun pushFragment(fragment: Fragment, above: Fragment) {
         val container = fragmentManager.findFragmentByTag(above.parentFragment.tag) as ContainerFragment
-        container
-                .childFragmentManager
-                .beginTransaction()
-                .replace(container.placeholderId(), fragment)
-                .addToBackStack(null)
-                .commit()
+        pushStrategy.pushFragment(container, fragment)
     }
 
     fun popFragment(position: Int, fail: () -> Unit) {
