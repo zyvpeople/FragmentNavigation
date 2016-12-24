@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/fragmentTag"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Tag"/>
+
+    <EditText
+        android:id="@+id/nextFragmentTitle"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:hint="Title for next fragment"/>
+
+    <Button
+        android:id="@+id/pushFragment"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Push fragment"/>
+
+    <Button
+        android:id="@+id/startActivity"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Start activity"/>
+
+    <Button
+        android:id="@+id/startDialog"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Start dialog"/>
+
+    <Button
+        android:id="@+id/startFragmentForResult"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Start fragment for result"/>
+
+    <Button
+        android:id="@+id/startBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Start bottom sheet"/>
+</LinearLayout>
