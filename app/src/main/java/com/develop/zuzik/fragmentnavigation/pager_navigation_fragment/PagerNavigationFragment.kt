@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import kotlinx.android.synthetic.main.fragment_pager_navigation.*
 
 /**
@@ -54,6 +54,10 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     override fun popChild(fail: () -> Unit) {
         popChild(viewPager.currentItem, fail)
+    }
+
+    override fun navigateToIndex(index: Int) {
+        viewPager.setCurrentItem(index, true)
     }
 
     //endregion

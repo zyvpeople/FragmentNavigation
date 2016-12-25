@@ -3,8 +3,9 @@ package com.develop.zuzik.fragmentnavigation
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.dsl.Scene
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), NavigationContainer {
 
@@ -19,6 +20,10 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
                     .beginTransaction()
                     .add(R.id.placeholder, navigationFragment)
                     .commit()
+        }
+        navigateToIndex.setOnClickListener {
+            val indexForNavigation = Integer.parseInt(navigationIndex.text.toString())
+            navigationFragment()?.navigateToIndex(indexForNavigation)
         }
     }
 

@@ -66,5 +66,13 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         }
     }
 
+    override fun navigateToIndex(index: Int) {
+        val firstIndexToDelete = index + 1
+        val lastIndexToDelete = childFragmentManager.backStackEntryCount - 1
+        (firstIndexToDelete..lastIndexToDelete).forEach {
+            childFragmentManager.popBackStack()
+        }
+    }
+
     //endregion
 }

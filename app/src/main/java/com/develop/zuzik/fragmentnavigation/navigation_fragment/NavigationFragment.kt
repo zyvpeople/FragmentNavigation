@@ -10,4 +10,5 @@ interface NavigationFragment {
 
     fun pushChild(child: Fragment)
     fun popChild(fail: () -> Unit)
+    fun navigateToIndex(index: Int)
 }
