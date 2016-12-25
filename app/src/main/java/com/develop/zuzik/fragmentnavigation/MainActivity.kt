@@ -5,10 +5,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.navigation_fragment_builder.NavigationFragmentBuilder
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.AddNewDetachOldPushChildStrategy
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.AddNewHideOldPushChildStrategy
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.AddNewPushChildStrategy
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.ReplaceOldWithNewPushChildStrategy
 
 class MainActivity : AppCompatActivity(), NavigationContainer {
 
@@ -29,20 +25,19 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     private fun createPagerNavigationFragment() =
             NavigationFragmentBuilder()
                     .pager {
-                        stack(TextFragmentFactory("00"), ReplaceOldWithNewPushChildStrategy())
-                        stack(TextFragmentFactory("10"), AddNewPushChildStrategy())
-                        stack(TextFragmentFactory("20"), AddNewDetachOldPushChildStrategy())
-                        stack(TextFragmentFactory("30"), AddNewHideOldPushChildStrategy())
-                        pager(AddNewHideOldPushChildStrategy()) {
-                            stack(TextFragmentFactory("400"), ReplaceOldWithNewPushChildStrategy())
-                            stack(TextFragmentFactory("410"), ReplaceOldWithNewPushChildStrategy())
-                            stack(TextFragmentFactory("420"), ReplaceOldWithNewPushChildStrategy())
-                            stack(TextFragmentFactory("430"), ReplaceOldWithNewPushChildStrategy())
+                        stack(TextFragmentFactory("00"))
+                        stack(TextFragmentFactory("10"))
+                        stack(TextFragmentFactory("20"))
+                        stack(TextFragmentFactory("30"))
+                        pager() {
+                            stack(TextFragmentFactory("400"))
+                            stack(TextFragmentFactory("410"))
+                            stack(TextFragmentFactory("420"))
+                            stack(TextFragmentFactory("430"))
                         }
                     }
 
-    private fun createStackNavigationFragment() =
-            NavigationFragmentBuilder().stack(TextFragmentFactory("0"), ReplaceOldWithNewPushChildStrategy())
+    private fun createStackNavigationFragment() = NavigationFragmentBuilder().stack(TextFragmentFactory("0"))
 
     fun navigationFragment() =
             supportFragmentManager.findFragmentById(R.id.placeholder) as NavigationFragment

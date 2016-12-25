@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.PushChildStrategy
+import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.ReplaceOldWithNewPushChildStrategy
 
 /**
  * User: zuzik
@@ -19,12 +20,10 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
     companion object {
 
         private val KEY_ROOT_FRAGMENT_FACTORY = "KEY_ROOT_FRAGMENT_FACTORY"
-        private val KEY_PUSH_STRATEGY = "KEY_PUSH_STRATEGY"
 
-        fun create(rootFragmentFactory: FragmentFactory, pushChildStrategy: PushChildStrategy): StackNavigationFragment {
+        fun create(rootFragmentFactory: FragmentFactory): StackNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_ROOT_FRAGMENT_FACTORY, rootFragmentFactory)
-            bundle.putSerializable(KEY_PUSH_STRATEGY, pushChildStrategy)
             val fragment = StackNavigationFragment()
             fragment.arguments = bundle
             return fragment
@@ -32,12 +31,11 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
     }
 
     private lateinit var rootFragmentFactory: FragmentFactory
-    private lateinit var pushChildStrategy: PushChildStrategy
+    private val pushChildStrategy: PushChildStrategy = ReplaceOldWithNewPushChildStrategy()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootFragmentFactory = arguments.getSerializable(KEY_ROOT_FRAGMENT_FACTORY) as FragmentFactory
-        pushChildStrategy = arguments.getSerializable(KEY_PUSH_STRATEGY) as PushChildStrategy
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

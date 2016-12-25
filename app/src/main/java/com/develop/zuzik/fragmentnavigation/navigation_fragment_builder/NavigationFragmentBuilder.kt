@@ -3,8 +3,6 @@ package com.develop.zuzik.fragmentnavigation.navigation_fragment_builder
 import android.support.v4.app.Fragment
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.PushChildStrategy
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.ReplaceOldWithNewPushChildStrategy
 
 /**
  * User: zuzik
@@ -12,12 +10,11 @@ import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strat
  */
 class NavigationFragmentBuilder {
 
-    fun stack(rootFragmentFactory: FragmentFactory,
-              pushChildStrategy: PushChildStrategy): Fragment =
-            StackNavigationFragmentFactory(rootFragmentFactory, pushChildStrategy).create()
+    fun stack(rootFragmentFactory: FragmentFactory): Fragment =
+            StackNavigationFragmentFactory(rootFragmentFactory).create()
 
     fun pager(fillPageBuilder: PagerBuilder.() -> Unit): Fragment {
-        val pagerBuilder = PagerBuilder(ReplaceOldWithNewPushChildStrategy())
+        val pagerBuilder = PagerBuilder()
         pagerBuilder.fillPageBuilder()
         return pagerBuilder.build().create()
     }

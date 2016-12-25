@@ -3,23 +3,21 @@ package com.develop.zuzik.fragmentnavigation.navigation_fragment_builder
 import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.PagerNavigationFragmentFactory
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.PushChildStrategy
 
 /**
  * User: zuzik
  * Date: 12/25/16
  */
-class PagerBuilder(internal val pushChildStrategy: PushChildStrategy) : Builder {
+class PagerBuilder : Builder {
 
     private val builders = mutableListOf<Builder>()
 
-    fun stack(rootFragmentFactory: FragmentFactory,
-              pushChildStrategy: PushChildStrategy) {
-        builders += StackBuilder(rootFragmentFactory, pushChildStrategy)
+    fun stack(rootFragmentFactory: FragmentFactory) {
+        builders += StackBuilder(rootFragmentFactory)
     }
 
-    fun pager(pushChildStrategy: PushChildStrategy, fillPageBuilder: PagerBuilder.() -> Unit) {
-        val pageBuilder = PagerBuilder(pushChildStrategy)
+    fun pager(fillPageBuilder: PagerBuilder.() -> Unit) {
+        val pageBuilder = PagerBuilder()
         pageBuilder.fillPageBuilder()
         builders += pageBuilder
     }
@@ -29,7 +27,7 @@ class PagerBuilder(internal val pushChildStrategy: PushChildStrategy) : Builder 
         for (builder in builders) {
             when (builder) {
                 is StackBuilder -> factories += builder.build()
-                is PagerBuilder -> factories += StackNavigationFragmentFactory(builder.build(), builder.pushChildStrategy)
+                is PagerBuilder -> factories += StackNavigationFragmentFactory(builder.build())
                 else -> NotImplementedError()
             }
         }
