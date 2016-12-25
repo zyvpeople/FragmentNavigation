@@ -54,4 +54,11 @@
         android:layout_height="64dp"
         android:gravity="center"
         android:text="Start bottom sheet"/>
+
+    <Button
+        android:id="@+id/startSettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="Start settings fragment"/>
 </LinearLayout>

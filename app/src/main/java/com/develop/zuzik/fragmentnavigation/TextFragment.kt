@@ -77,6 +77,11 @@ class TextFragment : Fragment() {
             dialogFragment.setTargetFragment(this, 4)
             dialogFragment.show(fragmentManager, "bottomSheetFragment")
         }
+        startSettingsFragment.setOnClickListener {
+            if (context is NavigationContainer) {
+                (context as NavigationContainer).pushChild(SettingsFragment())
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

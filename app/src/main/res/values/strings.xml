@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">FragmentNavigation</string>
+
+    <string name="inline_preferences">Inline</string>
+    <string name="title_checkbox_preference">Checkbox</string>
+    <string name="summary_checkbox_preference">Summary</string>
+    <string name="dialog_based_preferences">Dialog</string>
+    <string name="title_edittext_preference">Title</string>
+    <string name="summary_edittext_preference">Summary</string>
+    <string name="dialog_title_edittext_preference">Dialog</string>
+    <string name="dialog_title_list_preference">Dialog</string>
+    <string name="launch_preferences">Launch</string>
+    <string name="title_screen_preference">Title</string>
+    <string name="summary_screen_preference">Summary</string>
+    <string name="title_next_screen_toggle_preference">Title</string>
+    <string name="summary_next_screen_toggle_preference">Summary</string>
+    <string name="title_intent_preference">Intent</string>
+    <string name="summary_intent_preference">Summay</string>
+    <string name="preference_attributes">Attributes</string>
+    <string name="title_parent_preference">Paren</string>
+    <string name="summary_parent_preference">Summary</string>
+    <string name="title_child_preference">Child</string>
+    <string name="summary_child_preference">Summay</string>
+
 </resources>
