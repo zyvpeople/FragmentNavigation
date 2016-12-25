@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.PushChildStrategy
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.ReplaceOldWithNewPushChildStrategy
@@ -19,23 +20,23 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
 
     companion object {
 
-        private val KEY_ROOT_FRAGMENT_FACTORY = "KEY_ROOT_FRAGMENT_FACTORY"
+        private val KEY_FACTORIES = "KEY_FACTORIES"
 
-        fun create(rootFragmentFactory: FragmentFactory): StackNavigationFragment {
+        fun create(factories: Array<FragmentFactory>): StackNavigationFragment {
             val bundle = Bundle()
-            bundle.putSerializable(KEY_ROOT_FRAGMENT_FACTORY, rootFragmentFactory)
+            bundle.putSerializable(KEY_FACTORIES, factories)
             val fragment = StackNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    private lateinit var rootFragmentFactory: FragmentFactory
+    private lateinit var factories: Array<FragmentFactory>
     private val pushChildStrategy: PushChildStrategy = ReplaceOldWithNewPushChildStrategy()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        rootFragmentFactory = arguments.getSerializable(KEY_ROOT_FRAGMENT_FACTORY) as FragmentFactory
+        factories = arguments.getSerializable(StackNavigationFragment.KEY_FACTORIES) as Array<FragmentFactory>
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +47,7 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         super.onViewCreated(view, savedInstanceState)
         val hasChild = childFragmentManager.findFragmentById(R.id.placeholder) != null
         if (!hasChild) {
-            pushChild(rootFragmentFactory.create())
+            factories.forEach { pushChild(it.create()) }
         }
     }
 

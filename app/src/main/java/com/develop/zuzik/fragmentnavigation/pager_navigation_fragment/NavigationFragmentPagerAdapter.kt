@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.ViewGroup
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavigationFragment
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 
 /**
  * User: zuzik
@@ -14,7 +14,7 @@ import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavig
  */
 
 internal class NavigationFragmentPagerAdapter(private val fragmentManager: FragmentManager,
-                                              private val factories: Array<StackNavigationFragmentFactory>) : FragmentPagerAdapter(fragmentManager) {
+                                              private val factories: Array<FragmentFactory>) : FragmentPagerAdapter(fragmentManager) {
 
     private val tags = SparseArray<String>()
 
@@ -46,8 +46,7 @@ internal class NavigationFragmentPagerAdapter(private val fragmentManager: Fragm
     }
 
     private fun pushChild(child: Fragment, tag: String) {
-        val stackNavigationFragment = fragmentManager.findFragmentByTag(tag) as StackNavigationFragment
-        stackNavigationFragment.pushChild(child)
+        navigationFragment(tag)?.pushChild(child)
     }
 
     fun popChild(pageNumber: Int, fail: () -> Unit) {
@@ -59,7 +58,9 @@ internal class NavigationFragmentPagerAdapter(private val fragmentManager: Fragm
     }
 
     private fun popChild(tag: String, fail: () -> Unit) {
-        val container = fragmentManager.findFragmentByTag(tag) as StackNavigationFragment
-        container.popChild(fail)
+        navigationFragment(tag)?.popChild(fail)
     }
+
+    private fun navigationFragment(tag: String): NavigationFragment? =
+            fragmentManager.findFragmentByTag(tag) as? NavigationFragment
 }

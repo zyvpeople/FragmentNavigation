@@ -1,12 +1,12 @@
 package com.develop.zuzik.fragmentnavigation.stack_navigation_fragment
 
-import java.io.Serializable
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 
 /**
  * User: zuzik
  * Date: 12/24/16
  */
-class StackNavigationFragmentFactory(private val rootFragmentFactory: FragmentFactory) : Serializable {
+class StackNavigationFragmentFactory(private val factories: Array<FragmentFactory>) : FragmentFactory {
 
-    fun create() = StackNavigationFragment.create(rootFragmentFactory)
+    override fun create() = StackNavigationFragment.create(factories)
 }

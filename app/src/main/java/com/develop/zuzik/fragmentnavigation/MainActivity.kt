@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.navigation_fragment_builder.NavigationFragmentBuilder
+import com.develop.zuzik.fragmentnavigation.dsl.Scene
 
 class MainActivity : AppCompatActivity(), NavigationContainer {
 
@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
         setContentView(R.layout.activity_main)
         val existedNavigationFragment = supportFragmentManager.findFragmentById(R.id.placeholder)
         if (existedNavigationFragment == null) {
-            val navigationFragment = createPagerNavigationFragment()
-//            val navigationFragment = createStackNavigationFragment()
+//            val navigationFragment = createPagerNavigationFragment()
+            val navigationFragment = createStackNavigationFragment()
             supportFragmentManager
                     .beginTransaction()
                     .add(R.id.placeholder, navigationFragment)
@@ -23,27 +23,49 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     }
 
     private fun createPagerNavigationFragment() =
-            NavigationFragmentBuilder()
+            Scene()
                     .pager {
-                        stack(TextFragmentFactory("00"))
-                        stack(TextFragmentFactory("10"))
-                        stack(TextFragmentFactory("20"))
-                        stack(TextFragmentFactory("30"))
-                        pager() {
-                            stack(TextFragmentFactory("400"))
-                            stack(TextFragmentFactory("410"))
-                            stack(TextFragmentFactory("420"))
-                            stack(TextFragmentFactory("430"))
+                        single(TextFragmentFactory("00"))
+                        stack { single(TextFragmentFactory("10")) }
+                        stack {
+                            single(TextFragmentFactory("20"))
+                            single(TextFragmentFactory("21"))
+                        }
+                        pager {
+                            stack {
+                                single(TextFragmentFactory("300"))
+                                single(TextFragmentFactory("301"))
+                            }
+                        }
+                        pager {
+                            stack {
+                                single(TextFragmentFactory("310"))
+                                single(TextFragmentFactory("311"))
+                            }
+                        }
+                        pager {
+                            stack {
+                                single(TextFragmentFactory("320"))
+                                single(TextFragmentFactory("321"))
+                            }
                         }
                     }
 
-    private fun createStackNavigationFragment() = NavigationFragmentBuilder().stack(TextFragmentFactory("0"))
+    private fun createStackNavigationFragment() =
+            Scene()
+                    .stack {
+                        single(TextFragmentFactory("0"))
+                        single(TextFragmentFactory("1"))
+                        single(TextFragmentFactory("2"))
+                        single(TextFragmentFactory("3"))
+                        single(TextFragmentFactory("4"))
+                    }
 
     fun navigationFragment() =
-            supportFragmentManager.findFragmentById(R.id.placeholder) as NavigationFragment
+            supportFragmentManager.findFragmentById(R.id.placeholder) as? NavigationFragment
 
     override fun onBackPressed() {
-        navigationFragment().popChild() {
+        navigationFragment()?.popChild() {
             super.onBackPressed()
         }
     }
@@ -51,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     //region NavigationContainer
 
     override fun pushChild(child: Fragment) {
-        navigationFragment().pushChild(child)
+        navigationFragment()?.pushChild(child)
     }
 
     //endregion

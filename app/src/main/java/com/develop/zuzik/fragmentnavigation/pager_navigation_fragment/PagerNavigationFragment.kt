@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.StackNavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import kotlinx.android.synthetic.main.fragment_pager_navigation.*
 
 /**
@@ -20,7 +20,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
         private val KEY_FACTORIES = "KEY_FACTORIES"
 
-        fun create(factories: Array<StackNavigationFragmentFactory>): PagerNavigationFragment {
+        fun create(factories: Array<FragmentFactory>): PagerNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_FACTORIES, factories)
             val fragment = PagerNavigationFragment()
@@ -33,7 +33,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val factories = arguments.getSerializable(KEY_FACTORIES) as Array<StackNavigationFragmentFactory>
+        val factories = arguments.getSerializable(KEY_FACTORIES) as Array<FragmentFactory>
         adapter = NavigationFragmentPagerAdapter(childFragmentManager, factories)
     }
 
