@@ -31,13 +31,7 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         }
     }
 
-    private lateinit var factories: Array<FragmentFactory>
     private val pushChildStrategy: PushChildStrategy = ReplaceOldWithNewPushChildStrategy()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        factories = arguments.getSerializable(StackNavigationFragment.KEY_FACTORIES) as Array<FragmentFactory>
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_stack_navigation, container, false)
@@ -47,6 +41,7 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         super.onViewCreated(view, savedInstanceState)
         val hasChild = childFragmentManager.findFragmentById(R.id.placeholder) != null
         if (!hasChild) {
+            val factories = arguments.getSerializable(StackNavigationFragment.KEY_FACTORIES) as Array<FragmentFactory>
             factories.forEach { pushChild(it.create()) }
         }
     }

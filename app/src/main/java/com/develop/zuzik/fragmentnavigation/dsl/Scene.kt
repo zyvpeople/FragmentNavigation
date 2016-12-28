@@ -18,6 +18,9 @@ class Scene {
     fun pager(addChildren: MultipleBuilder.() -> Unit) =
             multipleScene(MultipleBuilder.createForPager(), addChildren)
 
+    fun tabs(addChildren: MultipleBuilder.() -> Unit) =
+            multipleScene(MultipleBuilder.createForTabs(), addChildren)
+
     private fun multipleScene(builder: MultipleBuilder, addChildren: MultipleBuilder.() -> Unit): Fragment {
         builder.addChildren()
         return builder.build().create()
