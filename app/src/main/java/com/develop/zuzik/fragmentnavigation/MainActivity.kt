@@ -40,17 +40,17 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     private fun createPagerNavigationFragment() =
             Scene()
                     .pager {
-                        stack {
-                            single(TextFragmentFactory("a1"))
-                            single(TextFragmentFactory("a2"))
+                        stack("stack1") {
+                            single("a1", TextFragmentFactory("a1"))
+                            single("a2", TextFragmentFactory("a2"))
                         }
-                        stack {
-                            single(TextFragmentFactory("b1"))
-                            single(TextFragmentFactory("b2"))
+                        stack("stack2") {
+                            single("b1", TextFragmentFactory("b1"))
+                            single("b2", TextFragmentFactory("b2"))
                         }
-                        stack {
-                            single(TextFragmentFactory("c1"))
-                            single(TextFragmentFactory("c2"))
+                        stack("stack3") {
+                            single("c1", TextFragmentFactory("c1"))
+                            single("c2", TextFragmentFactory("c2"))
                         }
                     }
 //            Scene()
@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     private fun createStackNavigationFragment() =
             Scene()
                     .stack {
-                        single(TextFragmentFactory("0"))
-                        single(TextFragmentFactory("1"))
+                        single("0", TextFragmentFactory("0"))
+                        single("1", TextFragmentFactory("1"))
 //                        single(TextFragmentFactory("2"))
 //                        single(TextFragmentFactory("3"))
 //                        pager {
@@ -116,9 +116,9 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     private fun createTabsNavigationFragment() =
             Scene()
                     .tabs {
-                        single(TextFragmentFactory("0"))
-                        single(TextFragmentFactory("1"))
-                        single(TextFragmentFactory("2"))
+                        single("0", TextFragmentFactory("0"))
+                        single("0", TextFragmentFactory("1"))
+                        single("0", TextFragmentFactory("2"))
                     }
 
     fun navigationFragment() =

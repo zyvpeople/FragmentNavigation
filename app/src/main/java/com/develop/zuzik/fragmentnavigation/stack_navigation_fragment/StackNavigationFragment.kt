@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.PushChildStrategy
 import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.push_strategy.ReplaceOldWithNewPushChildStrategy
@@ -22,12 +23,13 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
 
         private val KEY_FACTORIES = "KEY_FACTORIES"
 
-        fun create(factories: Array<FragmentFactory>): StackNavigationFragment {
-            val bundle = Bundle()
-            bundle.putSerializable(KEY_FACTORIES, factories)
-            val fragment = StackNavigationFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun create(entries: List<NavigationEntry>): StackNavigationFragment {
+//            val bundle = Bundle()
+//            bundle.putSerializable(KEY_FACTORIES, factories)
+//            val fragment = StackNavigationFragment()
+//            fragment.arguments = bundle
+//            return fragment
+            return StackNavigationFragment()
         }
     }
 

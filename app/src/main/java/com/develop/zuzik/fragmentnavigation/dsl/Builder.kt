@@ -1,6 +1,6 @@
 package com.develop.zuzik.fragmentnavigation.dsl
 
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 
 /**
  * User: zuzik
@@ -8,5 +8,5 @@ import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
  */
 internal interface Builder {
 
-    fun build(): FragmentFactory
+    fun build(): NavigationEntry
 }

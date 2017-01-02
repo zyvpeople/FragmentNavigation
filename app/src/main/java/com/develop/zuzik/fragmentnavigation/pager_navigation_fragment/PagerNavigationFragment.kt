@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
+import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.TabsNavigationFragment
 import kotlinx.android.synthetic.main.fragment_pager_navigation.*
 
 /**
@@ -20,12 +22,13 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
         private val KEY_FACTORIES = "KEY_FACTORIES"
 
-        fun create(factories: Array<FragmentFactory>): PagerNavigationFragment {
-            val bundle = Bundle()
-            bundle.putSerializable(KEY_FACTORIES, factories)
-            val fragment = PagerNavigationFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun create(entries: List<NavigationEntry>): PagerNavigationFragment {
+//            val bundle = Bundle()
+//            bundle.putSerializable(KEY_FACTORIES, factories)
+//            val fragment = PagerNavigationFragment()
+//            fragment.arguments = bundle
+//            return fragment
+            return PagerNavigationFragment()
         }
     }
 

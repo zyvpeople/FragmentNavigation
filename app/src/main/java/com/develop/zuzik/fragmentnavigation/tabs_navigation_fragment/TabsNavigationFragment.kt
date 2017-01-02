@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 
 /**
@@ -21,12 +22,16 @@ class TabsNavigationFragment : Fragment(), NavigationFragment {
         private val KEY_FACTORIES = "KEY_FACTORIES"
         private val KEY_STATE_CURRENT_INDEX = "KEY_STATE_CURRENT_INDEX"
 
-        fun create(factories: Array<FragmentFactory>): TabsNavigationFragment {
+        fun create(entries: List<NavigationEntry>): TabsNavigationFragment {
+            TODO()
+            /*
             val bundle = Bundle()
             bundle.putSerializable(KEY_FACTORIES, factories)
             val fragment = TabsNavigationFragment()
             fragment.arguments = bundle
             return fragment
+             */
+            return TabsNavigationFragment()
         }
     }
 
