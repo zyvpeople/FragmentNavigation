@@ -74,16 +74,14 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
 
     private fun createTabsNavigationFragment() =
             Scene()
-                    .list {
+                    .pager {
                         list("0") {
                             single("0a", TextFragmentFactory("0a"))
                         }
                         list("1") {
                             single("1a", TextFragmentFactory("1a"))
                         }
-                        list("2") {
-                            single("2a", TextFragmentFactory("2a"))
-                        }
+                        single("2a", TextFragmentFactory("2a"))
                     }
 
     fun navigationFragment() =

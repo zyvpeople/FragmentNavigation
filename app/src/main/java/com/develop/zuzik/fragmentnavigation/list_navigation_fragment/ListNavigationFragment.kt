@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exceptions.FragmentAlreadyExistException
+import com.develop.zuzik.fragmentnavigation.exceptions.FragmentDoesNotExistException
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
@@ -84,7 +86,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
                     .detach(fragment)
                     .commitNow()
         } else {
-            throw RuntimeException("Fragment with tag '$tag' already exit")
+            throw FragmentAlreadyExistException(tag)
         }
     }
 
@@ -97,7 +99,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
                     .remove(fragment)
                     .commitNow()
         } else {
-            throw RuntimeException("Fragment with tag '$tag' does not exit")
+            throw FragmentDoesNotExistException(tag)
         }
     }
 
@@ -115,7 +117,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
                     }
             transaction.commitNow()
         } else {
-            throw RuntimeException("Fragment with tag '$tag' does not exit")
+            throw FragmentDoesNotExistException(tag)
         }
     }
 

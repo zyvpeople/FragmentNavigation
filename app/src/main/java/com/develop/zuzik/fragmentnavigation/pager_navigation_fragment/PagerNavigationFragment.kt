@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exceptions.FragmentAlreadyExistException
+import com.develop.zuzik.fragmentnavigation.exceptions.FragmentDoesNotExistException
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.list_navigation_fragment.ListNavigationFragment
 import kotlinx.android.synthetic.main.fragment_pager_navigation.*
+import java.util.*
 
 /**
  * User: zuzik
@@ -18,46 +20,33 @@ import kotlinx.android.synthetic.main.fragment_pager_navigation.*
  */
 class PagerNavigationFragment : Fragment(), NavigationFragment {
 
-    override fun addFragment(tag: String, factory: FragmentFactory) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun goToFragment(tag: String) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun removeFragment(tag: String) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun pushFragment(tag: String, factory: FragmentFactory) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun popFragment(fail: () -> Unit) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     companion object {
 
-        private val KEY_FACTORIES = "KEY_FACTORIES"
+        private val KEY_ARGUMENT_NAVIGATION_ENTRIES = "KEY_ARGUMENT_NAVIGATION_ENTRIES"
+        private val KEY_STATE_NAVIGATION_ENTRIES = "KEY_STATE_NAVIGATION_ENTRIES"
 
         fun create(entries: List<NavigationEntry>): PagerNavigationFragment {
-//            val bundle = Bundle()
-//            bundle.putSerializable(KEY_FACTORIES, factories)
-//            val fragment = PagerNavigationFragment()
-//            fragment.arguments = bundle
-//            return fragment
-            return PagerNavigationFragment()
+            val bundle = Bundle()
+            bundle.putSerializable(KEY_ARGUMENT_NAVIGATION_ENTRIES, ArrayList(entries))
+            val fragment = PagerNavigationFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
-    private lateinit var adapter: NavigationFragmentPagerAdapter
+    private var adapter: NavigationFragmentPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val factories = arguments.getSerializable(KEY_FACTORIES) as Array<FragmentFactory>
-        adapter = NavigationFragmentPagerAdapter(childFragmentManager, factories)
+        if (adapter == null) {
+            if (savedInstanceState != null) {
+                val entries = savedInstanceState.getSerializable(KEY_STATE_NAVIGATION_ENTRIES) as ArrayList<NavigationEntry>
+                adapter = NavigationFragmentPagerAdapter(childFragmentManager, entries)
+            } else {
+                val entries = arguments.getSerializable(KEY_ARGUMENT_NAVIGATION_ENTRIES) as ArrayList<NavigationEntry>
+                adapter = NavigationFragmentPagerAdapter(childFragmentManager, entries)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,35 +58,71 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
         viewPager.adapter = adapter
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putSerializable(KEY_STATE_NAVIGATION_ENTRIES, ArrayList(adapter!!.entries))
+    }
+
     //region NavigationFragment
 
     override fun pushChild(child: Fragment) {
-        pushChild(child, viewPager.currentItem)
     }
 
     override fun popChild(fail: () -> Unit) {
-        popChild(viewPager.currentItem, fail)
     }
 
     override fun navigateToIndex(index: Int) {
-        viewPager.setCurrentItem(index, true)
     }
 
     //endregion
 
-    fun pushChild(child: Fragment, parent: Fragment) {
-        adapter.pushChild(child, parent)
+    override fun addFragment(tag: String, factory: FragmentFactory) {
+        if (!adapter!!.entries.map { it.tag }.contains(tag)) {
+            adapter!!.entries.add(NavigationEntry(tag, factory))
+            adapter!!.notifyDataSetChanged()
+        } else {
+            throw FragmentAlreadyExistException(tag)
+        }
     }
 
-    fun pushChild(child: Fragment, pageNumber: Int) {
-        adapter.pushChild(child, pageNumber)
+    override fun removeFragment(tag: String) {
+        if (adapter!!.entries.map { it.tag }.contains(tag)) {
+            (0..adapter!!.cachedFragmentsAtPositions.size()).forEach {
+                val fragmentPosition = adapter!!.cachedFragmentsAtPositions.keyAt(it)
+                if (adapter!!.entries.map { it.tag }[fragmentPosition] == tag) {
+                    val cachedFragment = adapter!!.cachedFragmentsAtPositions[fragmentPosition]
+                    adapter!!.removedFragments.add(cachedFragment)
+                }
+            }
+            adapter!!.entries.removeAt(adapter!!.entries.map { it.tag }.indexOf(tag))
+            adapter!!.notifyDataSetChanged()
+        } else {
+            throw FragmentDoesNotExistException(tag)
+        }
     }
 
-    fun popChild(pageNumber: Int, fail: () -> Unit) {
-        adapter.popChild(pageNumber, fail)
+    override fun goToFragment(tag: String) {
+        if (adapter!!.entries.map { it.tag }.contains(tag)) {
+            viewPager.setCurrentItem(adapter!!.entries.indexOf(adapter!!.entries.find { it.tag == tag }), true)
+        } else {
+            throw FragmentDoesNotExistException(tag)
+        }
     }
 
-    fun popChild(child: Fragment, fail: () -> Unit) {
-        adapter.popChild(child, fail)
+    override fun pushFragment(tag: String, factory: FragmentFactory) {
+        addFragment(tag, factory)
+        goToFragment(tag)
+    }
+
+    override fun popFragment(fail: () -> Unit) {
+        val entries = adapter!!.entries
+        val oldTopEntry = entries.getOrNull(entries.size - 1)
+        val newTopEntry = entries.getOrNull(entries.size - 2)
+        if (oldTopEntry != null && newTopEntry != null) {
+            removeFragment(oldTopEntry.tag)
+            goToFragment(newTopEntry.tag)
+        } else {
+            fail()
+        }
     }
 }
