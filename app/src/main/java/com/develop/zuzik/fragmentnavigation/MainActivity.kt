@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
 
     private fun createTabsNavigationFragment() =
             Scene()
-                    .tabs {
+                    .list {
                         single("0", TextFragmentFactory("0"))
                         single("1", TextFragmentFactory("1"))
                         single("2", TextFragmentFactory("2"))

@@ -5,7 +5,7 @@ import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositePagerNavigationFragmentFactory
 import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositeStackNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositeTabsNavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.list_navigation_fragment.CompositeListNavigationFragmentFactory
 
 /**
  * User: zuzik
@@ -17,7 +17,7 @@ class MultipleBuilder private constructor(private val tag: String,
     companion object {
         internal fun createForStack(tag: String) = MultipleBuilder(tag, CompositeStackNavigationFragmentFactory())
         internal fun createForPager(tag: String) = MultipleBuilder(tag, CompositePagerNavigationFragmentFactory())
-        internal fun createForTabs(tag: String) = MultipleBuilder(tag, CompositeTabsNavigationFragmentFactory())
+        internal fun createForList(tag: String) = MultipleBuilder(tag, CompositeListNavigationFragmentFactory())
     }
 
     private val builders = mutableListOf<Builder>()
@@ -38,8 +38,8 @@ class MultipleBuilder private constructor(private val tag: String,
         builders += builder
     }
 
-    fun tabs(tag: String, addChildren: MultipleBuilder.() -> Unit) {
-        val builder = createForTabs(tag)
+    fun list(tag: String, addChildren: MultipleBuilder.() -> Unit) {
+        val builder = createForList(tag)
         builder.addChildren()
         builders += builder
     }

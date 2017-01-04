@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.tabs_navigation_fragment
+package com.develop.zuzik.fragmentnavigation.list_navigation_fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,7 +18,7 @@ import java.util.*
  * Date: 12/22/16
  */
 
-class TabsNavigationFragment : Fragment(), NavigationFragment {
+class ListNavigationFragment : Fragment(), NavigationFragment {
 
     private class State(val entries: ArrayList<NavigationEntry>) : Serializable
 
@@ -27,10 +27,10 @@ class TabsNavigationFragment : Fragment(), NavigationFragment {
         private val KEY_ARGUMENT_STATE = "KEY_ARGUMENT_STATE"
         private val KEY_SAVED_STATE = "KEY_SAVED_STATE"
 
-        fun create(entries: List<NavigationEntry>): TabsNavigationFragment {
+        fun create(entries: List<NavigationEntry>): ListNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_ARGUMENT_STATE, State(ArrayList(entries)))
-            val fragment = TabsNavigationFragment()
+            val fragment = ListNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }

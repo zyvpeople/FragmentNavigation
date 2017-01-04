@@ -1,17 +1,16 @@
-package com.develop.zuzik.fragmentnavigation.pager_navigation_fragment
+package com.develop.zuzik.fragmentnavigation.list_navigation_fragment
 
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.CompositeFragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.TabsNavigationFragmentFactory
 
 /**
  * User: zuzik
  * Date: 12/25/16
  */
-class CompositeTabsNavigationFragmentFactory : CompositeFragmentFactory {
+class CompositeListNavigationFragmentFactory : CompositeFragmentFactory {
 
     override fun create(entries: List<NavigationEntry>): FragmentFactory {
-        return TabsNavigationFragmentFactory(entries)
+        return ListNavigationFragmentFactory(entries)
     }
 }
