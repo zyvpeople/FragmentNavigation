@@ -63,6 +63,26 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         }
     }
 
+    override fun addFragment(tag: String, factory: FragmentFactory) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun goToFragment(tag: String) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun removeFragment(tag: String) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun pushFragment(tag: String, factory: FragmentFactory) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun popFragment(stackBecameEmpty: () -> Unit) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun navigateToIndex(index: Int) {
         val firstIndexToDelete = index + 1
         val lastIndexToDelete = childFragmentManager.backStackEntryCount - 1

@@ -9,7 +9,7 @@ import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.stack_navigation_fragment.TabsNavigationFragment
+import com.develop.zuzik.fragmentnavigation.tabs_navigation_fragment.TabsNavigationFragment
 import kotlinx.android.synthetic.main.fragment_pager_navigation.*
 
 /**
@@ -17,6 +17,26 @@ import kotlinx.android.synthetic.main.fragment_pager_navigation.*
  * Date: 12/24/16
  */
 class PagerNavigationFragment : Fragment(), NavigationFragment {
+
+    override fun addFragment(tag: String, factory: FragmentFactory) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun goToFragment(tag: String) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun removeFragment(tag: String) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun pushFragment(tag: String, factory: FragmentFactory) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun popFragment(stackBecameEmpty: () -> Unit) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     companion object {
 

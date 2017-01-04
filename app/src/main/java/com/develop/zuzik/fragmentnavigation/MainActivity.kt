@@ -24,9 +24,20 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
                     .add(R.id.placeholder, navigationFragment)
                     .commitNow()
         }
-        navigateToIndex.setOnClickListener {
-            val indexForNavigation = Integer.parseInt(navigationIndex.text.toString())
-            navigationFragment()?.navigateToIndex(indexForNavigation)
+        goToTag.setOnClickListener {
+            navigationFragment()?.goToFragment(tagOfFragment.text.toString())
+        }
+        addWithTag.setOnClickListener {
+            navigationFragment()?.addFragment(tagOfFragment.text.toString(), TextFragmentFactory(tagOfFragment.text.toString()))
+        }
+        removeWithTag.setOnClickListener {
+            navigationFragment()?.removeFragment(tagOfFragment.text.toString())
+        }
+        pushWithTag.setOnClickListener {
+            navigationFragment()?.pushFragment(tagOfFragment.text.toString(), TextFragmentFactory(tagOfFragment.text.toString()))
+        }
+        pop.setOnClickListener {
+            navigationFragment()?.popFragment { onBackPressed() }
         }
         //fixme - fragment is not created at this moment
 //        navigationFragment()?.navigateToIndex(0)
@@ -117,17 +128,15 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
             Scene()
                     .tabs {
                         single("0", TextFragmentFactory("0"))
-                        single("0", TextFragmentFactory("1"))
-                        single("0", TextFragmentFactory("2"))
+                        single("1", TextFragmentFactory("1"))
+                        single("2", TextFragmentFactory("2"))
                     }
 
     fun navigationFragment() =
             supportFragmentManager.findFragmentById(R.id.placeholder) as? NavigationFragment
 
     override fun onBackPressed() {
-        navigationFragment()?.popChild() {
-            super.onBackPressed()
-        }
+        navigationFragment()?.popFragment { super.onBackPressed() }
     }
 
     //region NavigationContainer

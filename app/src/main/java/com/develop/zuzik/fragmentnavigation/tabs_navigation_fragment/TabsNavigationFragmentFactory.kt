@@ -2,6 +2,7 @@ package com.develop.zuzik.fragmentnavigation.stack_navigation_fragment
 
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
+import com.develop.zuzik.fragmentnavigation.tabs_navigation_fragment.TabsNavigationFragment
 
 /**
  * User: zuzik

@@ -23,17 +23,47 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/navigateToIndex"
-            android:layout_width="172dp"
+            android:id="@+id/goToTag"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:text="Navigate to index"/>
+            android:text="Go to tag"/>
+
+        <Button
+            android:id="@+id/addWithTag"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Add with tag"/>
+
+        <Button
+            android:id="@+id/removeWithTag"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Remove with tag"/>
 
         <EditText
-            android:id="@+id/navigationIndex"
+            android:id="@+id/tagOfFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Index for navigation"/>
+            android:hint="Fragment tag"/>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/pushWithTag"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Push with tag"/>
+
+        <Button
+            android:id="@+id/pop"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Pop"/>
+
+    </LinearLayout>
 </LinearLayout>

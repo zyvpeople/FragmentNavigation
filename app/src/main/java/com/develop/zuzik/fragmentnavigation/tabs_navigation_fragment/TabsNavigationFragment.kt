@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.stack_navigation_fragment
+package com.develop.zuzik.fragmentnavigation.tabs_navigation_fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,6 +9,9 @@ import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
+import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragmentChild
+import java.io.Serializable
+import java.util.*
 
 /**
  * User: zuzik
@@ -17,25 +20,23 @@ import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragme
 
 class TabsNavigationFragment : Fragment(), NavigationFragment {
 
+    private class State(val entries: ArrayList<NavigationEntry>) : Serializable
+
     companion object {
 
-        private val KEY_FACTORIES = "KEY_FACTORIES"
-        private val KEY_STATE_CURRENT_INDEX = "KEY_STATE_CURRENT_INDEX"
+        private val KEY_ARGUMENT_STATE = "KEY_ARGUMENT_STATE"
+        private val KEY_SAVED_STATE = "KEY_SAVED_STATE"
 
         fun create(entries: List<NavigationEntry>): TabsNavigationFragment {
-            TODO()
-            /*
             val bundle = Bundle()
-            bundle.putSerializable(KEY_FACTORIES, factories)
+            bundle.putSerializable(KEY_ARGUMENT_STATE, State(ArrayList(entries)))
             val fragment = TabsNavigationFragment()
             fragment.arguments = bundle
             return fragment
-             */
-            return TabsNavigationFragment()
         }
     }
 
-    private var currentIndex: Int? = null
+    lateinit private var state: State
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_tabs_navigation, container, false)
@@ -43,64 +44,121 @@ class TabsNavigationFragment : Fragment(), NavigationFragment {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val factories = arguments.getSerializable(TabsNavigationFragment.KEY_FACTORIES) as Array<FragmentFactory>
-        if (!factories.isEmpty()) {
-            navigateToIndex(currentIndex ?: savedInstanceState?.getInt(KEY_STATE_CURRENT_INDEX) ?: 0)
+        if (savedInstanceState != null) {
+            state = savedInstanceState.getSerializable(KEY_SAVED_STATE) as State
+        } else {
+            state = arguments.getSerializable(KEY_ARGUMENT_STATE) as State
+            val indexForNavigation = 0
+            val transaction = childFragmentManager.beginTransaction()
+            state
+                    .entries
+                    .forEachIndexed { index, navigationEntry ->
+                        val fragment = navigationEntry.factory.create()
+                        notifyChildOnAddedToParent(fragment)
+                        transaction.add(R.id.placeholder, fragment, navigationEntry.tag)
+                        if (index != indexForNavigation) {
+                            transaction.detach(fragment)
+                        }
+                    }
+            transaction.commitNow()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        if (currentIndex != null) {
-            outState?.putInt(KEY_STATE_CURRENT_INDEX, currentIndex!!)
-        }
+        outState?.putSerializable(KEY_SAVED_STATE, state)
     }
 
     //region NavigationFragment
 
     override fun pushChild(child: Fragment) {
-//        childFragmentManager
-//                .beginTransaction()
-//                .add(R.id.placeholder, child)
-//                .commitNow()
-//        navigateToIndex(childFragmentManager.fragments.size - 1)
+
     }
 
     override fun popChild(fail: () -> Unit) {
-//        val fragments = childFragmentManager.fragments
-//        val hasMoreThenOneChild = fragments != null && fragments.size > 1
-//        if (hasMoreThenOneChild) {
-//            childFragmentManager
-//                    .beginTransaction()
-//                    .remove(fragments[fragments.size - 1])
-//                    .commitNow()
-//            navigateToIndex(fragments.size - 1)
-//        } else {
-//            fail()
-//        }
+
     }
 
     override fun navigateToIndex(index: Int) {
-        val transaction = childFragmentManager.beginTransaction()
 
-        val fragmentForNavigation: Fragment? = childFragmentManager.findFragmentByTag(index.toString())
-        val fragments = childFragmentManager.fragments ?: emptyList()
-        fragments
-                .filter { it != fragmentForNavigation }
-                .filterNot { it.isDetached }
-                .forEach { transaction.detach(it) }
-
-        if (fragmentForNavigation != null) {
-            transaction.attach(fragmentForNavigation)
-        } else {
-            val factories = arguments.getSerializable(TabsNavigationFragment.KEY_FACTORIES) as Array<FragmentFactory>
-            val fragment = factories[index].create()
-            transaction.add(R.id.placeholder, fragment, index.toString())
-        }
-
-        transaction.commitNow()
-        currentIndex = index
     }
 
     //endregion
+
+    override fun addFragment(tag: String, factory: FragmentFactory) {
+        if (state.entries.find { it.tag == tag } == null) {
+            state.entries.add(NavigationEntry(tag, factory))
+            val fragment = factory.create()
+            notifyChildOnAddedToParent(fragment)
+            childFragmentManager
+                    .beginTransaction()
+                    .add(R.id.placeholder, fragment, tag)
+                    .detach(fragment)
+                    .commitNow()
+        } else {
+            throw RuntimeException("Fragment with tag '$tag' already exit")
+        }
+    }
+
+    override fun removeFragment(tag: String) {
+        if (state.entries.find { it.tag == tag } != null) {
+            state.entries -= state.entries.filter { it.tag == tag }
+            val fragment = childFragmentManager.findFragmentByTag(tag)
+            notifyChildOnRemovedFromParent(fragment)
+            childFragmentManager
+                    .beginTransaction()
+                    .remove(fragment)
+                    .commitNow()
+        } else {
+            throw RuntimeException("Fragment with tag '$tag' does not exit")
+        }
+    }
+
+    override fun goToFragment(tag: String) {
+        if (state.entries.find { it.tag == tag } != null) {
+            val fragments = fragments()
+            val transaction = childFragmentManager.beginTransaction()
+            fragments
+                    .forEach {
+                        if (it.tag == tag) {
+                            transaction.attach(it)
+                        } else {
+                            transaction.detach(it)
+                        }
+                    }
+            transaction.commitNow()
+        } else {
+            throw RuntimeException("Fragment with tag '$tag' does not exit")
+        }
+    }
+
+    override fun pushFragment(tag: String, factory: FragmentFactory) {
+        addFragment(tag, factory)
+        goToFragment(tag)
+    }
+
+    override fun popFragment(stackBecameEmpty: () -> Unit) {
+        val topFragment = state.entries.lastOrNull()
+        if (topFragment != null) {
+            removeFragment(topFragment.tag)
+            val newTopFragment = state.entries.lastOrNull()
+            if (newTopFragment != null) {
+                goToFragment(newTopFragment.tag)
+            } else {
+                stackBecameEmpty()
+            }
+        } else {
+            stackBecameEmpty()
+        }
+    }
+
+    private fun fragments(): List<Fragment> = (childFragmentManager.fragments ?: emptyList()).filterNotNull()
+
+    private fun notifyChildOnAddedToParent(fragment: Fragment) {
+        (fragment as? NavigationFragmentChild)?.onAddedToParentNavigationFragment(this)
+    }
+
+    private fun notifyChildOnRemovedFromParent(fragment: Fragment?) {
+        (fragment as? NavigationFragmentChild)?.onRemovedFromParentNavigationFragment()
+    }
 }

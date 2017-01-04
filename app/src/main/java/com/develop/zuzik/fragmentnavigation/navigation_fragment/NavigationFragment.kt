@@ -1,7 +1,6 @@
 package com.develop.zuzik.fragmentnavigation.navigation_fragment
 
 import android.support.v4.app.Fragment
-import com.develop.zuzik.fragmentnavigation.transaction.Transaction
 
 /**
  * User: zuzik
@@ -20,4 +19,10 @@ interface NavigationFragment {
 //    fun push(fragmentFactory: FragmentFactory, tag: String)
 //    fun pop(isOnLastFragment: () -> Unit)
 //    fun goTo(tag: String)
+
+    fun addFragment(tag: String, factory: FragmentFactory)
+    fun removeFragment(tag: String)
+    fun goToFragment(tag: String)
+    fun pushFragment(tag: String, factory: FragmentFactory)
+    fun popFragment(stackBecameEmpty: () -> Unit)
 }

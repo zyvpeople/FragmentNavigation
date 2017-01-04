@@ -1,64 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/fragmentTag"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Tag"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/nextFragmentTitle"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:hint="Title for next fragment"/>
+        <TextView
+            android:id="@+id/fragmentTag"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Tag"/>
 
-    <Button
-        android:id="@+id/pushFragment"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Push fragment"/>
+        <EditText
+            android:id="@+id/nextFragmentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:hint="Title for next fragment"/>
 
-    <Button
-        android:id="@+id/startActivity"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Start activity"/>
+        <Button
+            android:id="@+id/pushFragment"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Push fragment"/>
 
-    <Button
-        android:id="@+id/startDialog"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Start dialog"/>
+        <Button
+            android:id="@+id/startActivity"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Start activity"/>
 
-    <Button
-        android:id="@+id/startFragmentForResult"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Start fragment for result"/>
+        <Button
+            android:id="@+id/startDialog"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Start dialog"/>
 
-    <Button
-        android:id="@+id/startBottomSheet"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Start bottom sheet"/>
+        <Button
+            android:id="@+id/startFragmentForResult"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Start fragment for result"/>
 
-    <Button
-        android:id="@+id/startSettingsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:text="Start settings fragment"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/startBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Start bottom sheet"/>
+
+        <Button
+            android:id="@+id/startSettingsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Start settings fragment"/>
+    </LinearLayout>
+</ScrollView>
