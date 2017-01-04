@@ -10,7 +10,6 @@ import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragmentChild
-import java.io.Serializable
 import java.util.*
 
 /**
@@ -20,58 +19,46 @@ import java.util.*
 
 class ListNavigationFragment : Fragment(), NavigationFragment {
 
-    private class State(val entries: ArrayList<NavigationEntry>) : Serializable
-
     companion object {
 
-        private val KEY_ARGUMENT_STATE = "KEY_ARGUMENT_STATE"
-        private val KEY_SAVED_STATE = "KEY_SAVED_STATE"
+        private val KEY_NAVIGATION_ENTRIES = "KEY_NAVIGATION_ENTRIES"
 
         fun create(entries: List<NavigationEntry>): ListNavigationFragment {
             val bundle = Bundle()
-            bundle.putSerializable(KEY_ARGUMENT_STATE, State(ArrayList(entries)))
+            bundle.putSerializable(KEY_NAVIGATION_ENTRIES, ArrayList(entries))
             val fragment = ListNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    private var state: State? = null
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_tabs_navigation, container, false)
+        return inflater?.inflate(R.layout.fragment_list_navigation, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (state != null) {
+        if (childFragmentManager.findFragmentById(R.id.placeholder) != null) {
+            fragments()
+                    .forEach { notifyChildOnAddedToParent(it) }
             return
-        } else if (savedInstanceState != null) {
-            state = savedInstanceState.getSerializable(KEY_SAVED_STATE) as State
-        } else {
-            state = arguments.getSerializable(KEY_ARGUMENT_STATE) as State
-            val indexForNavigation = 0
-            val transaction = childFragmentManager.beginTransaction()
-            state!!
-                    .entries
-                    .forEachIndexed { index, navigationEntry ->
-                        val fragment = navigationEntry.factory.create()
-                        notifyChildOnAddedToParent(fragment)
-                        transaction.add(R.id.placeholder, fragment, navigationEntry.tag)
-                        if (index != indexForNavigation) {
-                            transaction.detach(fragment)
-                        }
-                    }
-            transaction.commitNow()
         }
+        val entries = arguments.getSerializable(KEY_NAVIGATION_ENTRIES) as ArrayList<NavigationEntry>
+        val indexForNavigation = 0
+        val transaction = childFragmentManager.beginTransaction()
+        entries
+                .forEachIndexed { index, navigationEntry ->
+                    val fragment = navigationEntry.factory.create()
+                    notifyChildOnAddedToParent(fragment)
+                    transaction.add(R.id.placeholder, fragment, navigationEntry.tag)
+                    if (index != indexForNavigation) {
+                        transaction.detach(fragment)
+                    }
+                }
+        transaction.commitNow()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-        outState?.putSerializable(KEY_SAVED_STATE, state)
-    }
-
-    //region NavigationFragment
+//region NavigationFragment
 
     override fun pushChild(child: Fragment) {
 
@@ -85,11 +72,10 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
 
     }
 
-    //endregion
+//endregion
 
     override fun addFragment(tag: String, factory: FragmentFactory) {
-        if (state!!.entries.find { it.tag == tag } == null) {
-            state!!.entries.add(NavigationEntry(tag, factory))
+        if (fragments().find { it.tag == tag } == null) {
             val fragment = factory.create()
             notifyChildOnAddedToParent(fragment)
             childFragmentManager
@@ -103,8 +89,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun removeFragment(tag: String) {
-        if (state!!.entries.find { it.tag == tag } != null) {
-            state!!.entries -= state!!.entries.filter { it.tag == tag }
+        if (fragments().find { it.tag == tag } != null) {
             val fragment = childFragmentManager.findFragmentByTag(tag)
             notifyChildOnRemovedFromParent(fragment)
             childFragmentManager
@@ -117,7 +102,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun goToFragment(tag: String) {
-        if (state!!.entries.find { it.tag == tag } != null) {
+        if (fragments().find { it.tag == tag } != null) {
             val fragments = fragments()
             val transaction = childFragmentManager.beginTransaction()
             fragments
@@ -139,18 +124,15 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
         goToFragment(tag)
     }
 
-    override fun popFragment(stackBecameEmpty: () -> Unit) {
-        val topFragment = state!!.entries.lastOrNull()
-        if (topFragment != null) {
-            removeFragment(topFragment.tag)
-            val newTopFragment = state!!.entries.lastOrNull()
-            if (newTopFragment != null) {
-                goToFragment(newTopFragment.tag)
-            } else {
-                stackBecameEmpty()
-            }
+    override fun popFragment(fail: () -> Unit) {
+        val fragments = fragments()
+        val oldTopFragment = fragments.getOrNull(fragments.size - 1)
+        val newTopFragment = fragments.getOrNull(fragments.size - 2)
+        if (oldTopFragment != null && newTopFragment != null) {
+            removeFragment(oldTopFragment.tag)
+            goToFragment(newTopFragment.tag)
         } else {
-            stackBecameEmpty()
+            fail()
         }
     }
 

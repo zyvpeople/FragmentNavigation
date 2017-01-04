@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragmentChild
 import kotlinx.android.synthetic.main.fragment_text.*
@@ -57,6 +58,9 @@ class TextFragment : Fragment(), NavigationFragmentChild {
         fragmentTag.text = text
         pushFragment.setOnClickListener {
             parentNavigationFragment?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
+        }
+        popFragment.setOnClickListener {
+            parentNavigationFragment?.popFragment {  }
         }
         startActivity.setOnClickListener {
             startActivityForResult(Intent(context, ResultActivity::class.java), 1)

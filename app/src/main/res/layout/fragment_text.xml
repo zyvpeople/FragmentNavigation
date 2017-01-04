@@ -32,6 +32,13 @@
             android:text="Push fragment"/>
 
         <Button
+            android:id="@+id/popFragment"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:text="Pop fragment"/>
+
+        <Button
             android:id="@+id/startActivity"
             android:layout_width="match_parent"
             android:layout_height="64dp"
