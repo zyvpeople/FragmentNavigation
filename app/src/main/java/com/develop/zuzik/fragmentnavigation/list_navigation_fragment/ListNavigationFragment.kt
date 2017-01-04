@@ -36,7 +36,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
         }
     }
 
-    lateinit private var state: State
+    private var state: State? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_tabs_navigation, container, false)
@@ -44,13 +44,15 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
+        if (state != null) {
+            return
+        } else if (savedInstanceState != null) {
             state = savedInstanceState.getSerializable(KEY_SAVED_STATE) as State
         } else {
             state = arguments.getSerializable(KEY_ARGUMENT_STATE) as State
             val indexForNavigation = 0
             val transaction = childFragmentManager.beginTransaction()
-            state
+            state!!
                     .entries
                     .forEachIndexed { index, navigationEntry ->
                         val fragment = navigationEntry.factory.create()
@@ -86,8 +88,8 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     //endregion
 
     override fun addFragment(tag: String, factory: FragmentFactory) {
-        if (state.entries.find { it.tag == tag } == null) {
-            state.entries.add(NavigationEntry(tag, factory))
+        if (state!!.entries.find { it.tag == tag } == null) {
+            state!!.entries.add(NavigationEntry(tag, factory))
             val fragment = factory.create()
             notifyChildOnAddedToParent(fragment)
             childFragmentManager
@@ -101,8 +103,8 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun removeFragment(tag: String) {
-        if (state.entries.find { it.tag == tag } != null) {
-            state.entries -= state.entries.filter { it.tag == tag }
+        if (state!!.entries.find { it.tag == tag } != null) {
+            state!!.entries -= state!!.entries.filter { it.tag == tag }
             val fragment = childFragmentManager.findFragmentByTag(tag)
             notifyChildOnRemovedFromParent(fragment)
             childFragmentManager
@@ -115,7 +117,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun goToFragment(tag: String) {
-        if (state.entries.find { it.tag == tag } != null) {
+        if (state!!.entries.find { it.tag == tag } != null) {
             val fragments = fragments()
             val transaction = childFragmentManager.beginTransaction()
             fragments
@@ -138,10 +140,10 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun popFragment(stackBecameEmpty: () -> Unit) {
-        val topFragment = state.entries.lastOrNull()
+        val topFragment = state!!.entries.lastOrNull()
         if (topFragment != null) {
             removeFragment(topFragment.tag)
-            val newTopFragment = state.entries.lastOrNull()
+            val newTopFragment = state!!.entries.lastOrNull()
             if (newTopFragment != null) {
                 goToFragment(newTopFragment.tag)
             } else {

@@ -64,72 +64,26 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
                             single("c2", TextFragmentFactory("c2"))
                         }
                     }
-//            Scene()
-//                    .pager {
-//                        stack {
-//                            stack {
-//                                single(TextFragmentFactory("aaa1"))
-//                                single(TextFragmentFactory("aaa2"))
-//                            }
-//                            stack {
-//                                single(TextFragmentFactory("bbb1"))
-//                                single(TextFragmentFactory("bbb2"))
-//                            }
-//                        }
-//                        single(TextFragmentFactory("001"))
-//                        stack { single(TextFragmentFactory("10")) }
-//                        stack {
-//                            single(TextFragmentFactory("20"))
-//                            single(TextFragmentFactory("21"))
-//                        }
-//                        pager {
-//                            stack {
-//                                single(TextFragmentFactory("300"))
-//                                single(TextFragmentFactory("301"))
-//                            }
-//                        }
-//                        pager {
-//                            stack {
-//                                single(TextFragmentFactory("310"))
-//                                single(TextFragmentFactory("311"))
-//                            }
-//                        }
-//                        pager {
-//                            stack {
-//                                single(TextFragmentFactory("320"))
-//                                single(TextFragmentFactory("321"))
-//                            }
-//                            stack {
-//                                single(TextFragmentFactory("aaa1"))
-//                                single(TextFragmentFactory("aaa2"))
-//                            }
-//                            stack {
-//                                single(TextFragmentFactory("bbb1"))
-//                                single(TextFragmentFactory("bbb2"))
-//                            }
-//                        }
-//                    }
 
     private fun createStackNavigationFragment() =
             Scene()
                     .stack {
                         single("0", TextFragmentFactory("0"))
                         single("1", TextFragmentFactory("1"))
-//                        single(TextFragmentFactory("2"))
-//                        single(TextFragmentFactory("3"))
-//                        pager {
-//                            single(TextFragmentFactory("a"))
-//                            single(TextFragmentFactory("b"))
-//                        }
-//                        single(TextFragmentFactory("4"))
                     }
 
     private fun createTabsNavigationFragment() =
             Scene()
                     .list {
-                        single("0", TextFragmentFactory("0"))
-                        single("1", TextFragmentFactory("1"))
-                        single("2", TextFragmentFactory("2"))
+                        list("0") {
+                            single("0a", TextFragmentFactory("0a"))
+                        }
+                        list("1") {
+                            single("1a", TextFragmentFactory("1a"))
+                        }
+                        list("2") {
+                            single("2a", TextFragmentFactory("2a"))
+                        }
                     }
 
     fun navigationFragment() =
