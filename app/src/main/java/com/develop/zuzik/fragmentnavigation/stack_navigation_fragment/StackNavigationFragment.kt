@@ -79,7 +79,7 @@ class StackNavigationFragment : Fragment(), NavigationFragment {
         throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun popFragment(stackBecameEmpty: () -> Unit) {
+    override fun popFragment(fail: () -> Unit) {
         throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

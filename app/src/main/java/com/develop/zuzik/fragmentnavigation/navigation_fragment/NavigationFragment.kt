@@ -24,5 +24,5 @@ interface NavigationFragment {
     fun removeFragment(tag: String)
     fun goToFragment(tag: String)
     fun pushFragment(tag: String, factory: FragmentFactory)
-    fun popFragment(stackBecameEmpty: () -> Unit)
+    fun popFragment(fail: () -> Unit)
 }
