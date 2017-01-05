@@ -1,25 +1,9 @@
 package com.develop.zuzik.fragmentnavigation.dsl
 
-import android.support.v4.app.Fragment
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 
 /**
  * User: zuzik
- * Date: 12/25/16
+ * Date: 1/5/17
  */
-
-class Scene {
-
-    fun single(factory: FragmentFactory) = factory.create()
-
-    fun pager(addChildren: MultipleBuilder.() -> Unit) =
-            multipleScene(MultipleBuilder.createForPager(""), addChildren)
-
-    fun list(addChildren: MultipleBuilder.() -> Unit) =
-            multipleScene(MultipleBuilder.createForList(""), addChildren)
-
-    private fun multipleScene(builder: MultipleBuilder, addChildren: MultipleBuilder.() -> Unit): Fragment {
-        builder.addChildren()
-        return builder.build().factory.create()
-    }
-}
+class Scene(val fragmentFactory: FragmentFactory)
