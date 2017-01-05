@@ -8,9 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragmentChild
 import kotlinx.android.synthetic.main.fragment_text.*
 
 /**
@@ -18,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_text.*
  * Date: 12/22/16
  */
 
-class TextFragment : Fragment(), NavigationFragmentChild {
+class TextFragment : Fragment() {
 
     companion object {
 
@@ -33,7 +31,6 @@ class TextFragment : Fragment(), NavigationFragmentChild {
         }
     }
 
-    private var parentNavigationFragment: NavigationFragment? = null
     private var text = ""
 
     override fun onAttach(context: Context?) {
@@ -57,10 +54,10 @@ class TextFragment : Fragment(), NavigationFragmentChild {
         Log.d("TextFragment", "$text onViewCreated")
         fragmentTag.text = text
         pushFragment.setOnClickListener {
-            parentNavigationFragment?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
+            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
         }
         popFragment.setOnClickListener {
-            parentNavigationFragment?.popFragment {  }
+            parentNavigationFragment()?.popFragment { }
         }
         startActivity.setOnClickListener {
             startActivityForResult(Intent(context, ResultActivity::class.java), 1)
@@ -82,7 +79,7 @@ class TextFragment : Fragment(), NavigationFragmentChild {
             dialogFragment.show(fragmentManager, "bottomSheetFragment")
         }
         startSettingsFragment.setOnClickListener {
-            parentNavigationFragment?.pushFragment(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
+            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
         }
     }
 
@@ -136,17 +133,6 @@ class TextFragment : Fragment(), NavigationFragmentChild {
         super.onDetach()
     }
 
-    //region NavigationFragmentChild
-
-    override fun onAddedToParentNavigationFragment(parent: NavigationFragment) {
-        parentNavigationFragment = parent
-        Log.d("TextFragment", "$text onAddedToParentNavigationFragment")
-    }
-
-    override fun onRemovedFromParentNavigationFragment() {
-        parentNavigationFragment = null
-        Log.d("TextFragment", "$text onRemovedFromParentNavigationFragment")
-    }
-
-    //endregion
+    private fun parentNavigationFragment(): NavigationFragment? =
+            parentFragment as? NavigationFragment
 }

@@ -11,7 +11,6 @@ import com.develop.zuzik.fragmentnavigation.exceptions.FragmentDoesNotExistExcep
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragmentChild
 import java.util.*
 
 /**
@@ -41,8 +40,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentById(R.id.placeholder) != null) {
-            fragments()
-                    .forEach { notifyChildOnAddedToParent(it) }
             return
         }
         val entries = arguments.getSerializable(KEY_NAVIGATION_ENTRIES) as ArrayList<NavigationEntry>
@@ -51,7 +48,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
         entries
                 .forEachIndexed { index, navigationEntry ->
                     val fragment = navigationEntry.factory.create()
-                    notifyChildOnAddedToParent(fragment)
                     transaction.add(R.id.placeholder, fragment, navigationEntry.tag)
                     if (index != indexForNavigation) {
                         transaction.detach(fragment)
@@ -65,7 +61,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     override fun addFragment(tag: String, factory: FragmentFactory) {
         if (fragments().find { it.tag == tag } == null) {
             val fragment = factory.create()
-            notifyChildOnAddedToParent(fragment)
             childFragmentManager
                     .beginTransaction()
                     .add(R.id.placeholder, fragment, tag)
@@ -79,7 +74,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     override fun removeFragment(tag: String) {
         if (fragments().find { it.tag == tag } != null) {
             val fragment = childFragmentManager.findFragmentByTag(tag)
-            notifyChildOnRemovedFromParent(fragment)
             childFragmentManager
                     .beginTransaction()
                     .remove(fragment)
@@ -125,14 +119,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     private fun fragments(): List<Fragment> = (childFragmentManager.fragments ?: emptyList()).filterNotNull()
-
-    private fun notifyChildOnAddedToParent(fragment: Fragment) {
-        (fragment as? NavigationFragmentChild)?.onAddedToParentNavigationFragment(this)
-    }
-
-    private fun notifyChildOnRemovedFromParent(fragment: Fragment?) {
-        (fragment as? NavigationFragmentChild)?.onRemovedFromParentNavigationFragment()
-    }
 
     //endregion
 }
