@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.navigation_fragment
+package com.develop.zuzik.fragmentnavigation.navigation.interfaces
 
 import android.support.v4.app.Fragment
 import java.io.Serializable

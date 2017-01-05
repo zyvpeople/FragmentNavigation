@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.navigation_fragment
+package com.develop.zuzik.fragmentnavigation.navigation.interfaces
 
 /**
  * User: zuzik

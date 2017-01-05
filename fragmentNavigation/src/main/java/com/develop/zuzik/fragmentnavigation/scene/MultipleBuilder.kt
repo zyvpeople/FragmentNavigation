@@ -1,10 +1,10 @@
-package com.develop.zuzik.fragmentnavigation.dsl
+package com.develop.zuzik.fragmentnavigation.scene
 
-import com.develop.zuzik.fragmentnavigation.list_navigation_fragment.CompositeListNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.CompositeFragmentFactory
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
-import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositePagerNavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation.list.CompositeListNavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.CompositeFragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.NavigationEntry
+import com.develop.zuzik.fragmentnavigation.navigation.pager.CompositePagerNavigationFragmentFactory
 
 /**
  * User: zuzik

@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.list_navigation_fragment
+package com.develop.zuzik.fragmentnavigation.navigation.list
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
-import com.develop.zuzik.fragmentnavigation.exceptions.FragmentAlreadyExistException
-import com.develop.zuzik.fragmentnavigation.exceptions.FragmentDoesNotExistException
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
-import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
+import com.develop.zuzik.fragmentnavigation.exception.FragmentAlreadyExistException
+import com.develop.zuzik.fragmentnavigation.exception.FragmentDoesNotExistException
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.NavigationEntry
+import com.develop.zuzik.fragmentnavigation.navigation.interfaces.NavigationFragment
 import java.util.*
 
 /**

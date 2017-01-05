@@ -1,4 +1,4 @@
-package com.develop.zuzik.fragmentnavigation.exceptions
+package com.develop.zuzik.fragmentnavigation.exception
 
 /**
  * User: zuzik

@@ -1,8 +1,8 @@
-package com.develop.zuzik.fragmentnavigation.scene_placeholder
+package com.develop.zuzik.fragmentnavigation.scene
 
 import android.support.annotation.IdRes
 import android.support.v4.app.FragmentManager
-import com.develop.zuzik.fragmentnavigation.dsl.Scene
+import com.develop.zuzik.fragmentnavigation.scene.Scene
 
 /**
  * User: zuzik
