@@ -71,12 +71,10 @@ class TextFragment : Fragment(), NavigationFragmentChild {
             dialogFragment.show(fragmentManager, "dialogFragment")
         }
         startFragmentForResult.setOnClickListener {
-            if (context is NavigationContainer) {
-                TODO()
-                val fragment = ResultFragment.create()
-                fragment.setTargetFragment(this, 3)
-                (context as NavigationContainer).pushChild(fragment)
-            }
+            TODO()
+//            val fragment = ResultFragment.create()
+//            fragment.setTargetFragment(this, 3)
+//            (context as NavigationContainer).pushChild(fragment)
         }
         startBottomSheet.setOnClickListener {
             val dialogFragment = TextBottomSheetDialogFragment()

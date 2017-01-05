@@ -1,11 +1,10 @@
 package com.develop.zuzik.fragmentnavigation.dsl
 
+import com.develop.zuzik.fragmentnavigation.list_navigation_fragment.CompositeListNavigationFragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.CompositeFragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationEntry
 import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositePagerNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.pager_navigation_fragment.CompositeStackNavigationFragmentFactory
-import com.develop.zuzik.fragmentnavigation.list_navigation_fragment.CompositeListNavigationFragmentFactory
 
 /**
  * User: zuzik
@@ -15,7 +14,6 @@ class MultipleBuilder private constructor(private val tag: String,
                                           private val compositeFragmentFactory: CompositeFragmentFactory) : Builder {
 
     companion object {
-        internal fun createForStack(tag: String) = MultipleBuilder(tag, CompositeStackNavigationFragmentFactory())
         internal fun createForPager(tag: String) = MultipleBuilder(tag, CompositePagerNavigationFragmentFactory())
         internal fun createForList(tag: String) = MultipleBuilder(tag, CompositeListNavigationFragmentFactory())
     }
@@ -24,12 +22,6 @@ class MultipleBuilder private constructor(private val tag: String,
 
     fun single(tag: String, fragmentFactory: FragmentFactory) {
         builders += SingleBuilder.create(tag, fragmentFactory)
-    }
-
-    fun stack(tag: String, addChildren: MultipleBuilder.() -> Unit) {
-        val builder = createForStack(tag)
-        builder.addChildren()
-        builders += builder
     }
 
     fun pager(tag: String, addChildren: MultipleBuilder.() -> Unit) {

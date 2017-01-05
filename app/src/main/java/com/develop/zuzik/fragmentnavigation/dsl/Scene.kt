@@ -12,9 +12,6 @@ class Scene {
 
     fun single(factory: FragmentFactory) = factory.create()
 
-    fun stack(addChildren: MultipleBuilder.() -> Unit) =
-            multipleScene(MultipleBuilder.createForStack(""), addChildren)
-
     fun pager(addChildren: MultipleBuilder.() -> Unit) =
             multipleScene(MultipleBuilder.createForPager(""), addChildren)
 

@@ -65,17 +65,6 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     //region NavigationFragment
 
-    override fun pushChild(child: Fragment) {
-    }
-
-    override fun popChild(fail: () -> Unit) {
-    }
-
-    override fun navigateToIndex(index: Int) {
-    }
-
-    //endregion
-
     override fun addFragment(tag: String, factory: FragmentFactory) {
         if (!adapter!!.entries.map { it.tag }.contains(tag)) {
             adapter!!.entries.add(NavigationEntry(tag, factory))
@@ -125,4 +114,6 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
             fail()
         }
     }
+
+    //endregion
 }

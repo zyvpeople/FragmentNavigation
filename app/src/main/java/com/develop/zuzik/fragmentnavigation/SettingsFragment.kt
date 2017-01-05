@@ -13,9 +13,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         findPreference("screen_preference").onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            if (context is NavigationContainer) {
-                (context as NavigationContainer).pushChild(SettingsFragment())
-            }
+            //TODO: push settings fragment
             true
         }
     }

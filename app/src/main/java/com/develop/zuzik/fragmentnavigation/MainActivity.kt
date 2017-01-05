@@ -9,16 +9,14 @@ import com.develop.zuzik.fragmentnavigation.dsl.Scene
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), NavigationContainer {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val existedNavigationFragment = supportFragmentManager.findFragmentById(R.id.placeholder)
         if (existedNavigationFragment == null) {
-//            val navigationFragment = createPagerNavigationFragment()
-//            val navigationFragment = createStackNavigationFragment()
-            val navigationFragment = createTabsNavigationFragment()
+            val navigationFragment = createScene()
             supportFragmentManager
                     .beginTransaction()
                     .add(R.id.placeholder, navigationFragment)
@@ -48,31 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
         Log.d("MainActivity", "onActivityResult")
     }
 
-    private fun createPagerNavigationFragment() =
-            Scene()
-                    .pager {
-                        stack("stack1") {
-                            single("a1", TextFragmentFactory("a1"))
-                            single("a2", TextFragmentFactory("a2"))
-                        }
-                        stack("stack2") {
-                            single("b1", TextFragmentFactory("b1"))
-                            single("b2", TextFragmentFactory("b2"))
-                        }
-                        stack("stack3") {
-                            single("c1", TextFragmentFactory("c1"))
-                            single("c2", TextFragmentFactory("c2"))
-                        }
-                    }
-
-    private fun createStackNavigationFragment() =
-            Scene()
-                    .stack {
-                        single("0", TextFragmentFactory("0"))
-                        single("1", TextFragmentFactory("1"))
-                    }
-
-    private fun createTabsNavigationFragment() =
+    private fun createScene() =
             Scene()
                     .pager {
                         list("0") {
@@ -90,12 +64,4 @@ class MainActivity : AppCompatActivity(), NavigationContainer {
     override fun onBackPressed() {
         navigationFragment()?.popFragment { super.onBackPressed() }
     }
-
-    //region NavigationContainer
-
-    override fun pushChild(child: Fragment) {
-        navigationFragment()?.pushChild(child)
-    }
-
-    //endregion
 }

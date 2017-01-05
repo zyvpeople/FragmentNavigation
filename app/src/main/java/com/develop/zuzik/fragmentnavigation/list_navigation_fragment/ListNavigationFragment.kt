@@ -60,21 +60,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
         transaction.commitNow()
     }
 
-//region NavigationFragment
-
-    override fun pushChild(child: Fragment) {
-
-    }
-
-    override fun popChild(fail: () -> Unit) {
-
-    }
-
-    override fun navigateToIndex(index: Int) {
-
-    }
-
-//endregion
+    //region NavigationFragment
 
     override fun addFragment(tag: String, factory: FragmentFactory) {
         if (fragments().find { it.tag == tag } == null) {
@@ -147,4 +133,6 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     private fun notifyChildOnRemovedFromParent(fragment: Fragment?) {
         (fragment as? NavigationFragmentChild)?.onRemovedFromParentNavigationFragment()
     }
+
+    //endregion
 }
