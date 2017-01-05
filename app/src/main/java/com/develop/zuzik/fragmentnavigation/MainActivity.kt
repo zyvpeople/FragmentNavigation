@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.develop.zuzik.fragmentnavigation.dsl.SceneFactory
+import com.develop.zuzik.fragmentnavigation.dsl.SceneBuilder
 import com.develop.zuzik.fragmentnavigation.navigation_fragment.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.scene_placeholder.ScenePlaceholder
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createScene() =
-            SceneFactory()
+            SceneBuilder()
                     .pager {
                         list("0") {
                             single("0a", TextFragmentFactory("0a"))
