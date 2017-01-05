@@ -53,13 +53,6 @@
             android:text="Start dialog"/>
 
         <Button
-            android:id="@+id/startFragmentForResult"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center"
-            android:text="Start fragment for result"/>
-
-        <Button
             android:id="@+id/startBottomSheet"
             android:layout_width="match_parent"
             android:layout_height="64dp"

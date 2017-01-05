@@ -4,17 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.develop.zuzik.fragmentnavigation.scene.SceneBuilder
 import com.develop.zuzik.fragmentnavigation.navigation.interfaces.NavigationFragment
+import com.develop.zuzik.fragmentnavigation.scene.SceneBuilder
 import com.develop.zuzik.fragmentnavigation.scene.ScenePlaceholder
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var scenePlaceholder: ScenePlaceholder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ScenePlaceholder(createScene()).showScene(supportFragmentManager, R.id.placeholder)
+        scenePlaceholder = ScenePlaceholder(createScene(), supportFragmentManager, R.id.placeholder)
+        scenePlaceholder.showScene()
         goToTag.setOnClickListener {
             navigationFragment()?.goToFragment(tagOfFragment.text.toString())
         }
@@ -30,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         pop.setOnClickListener {
             navigationFragment()?.popFragment { onBackPressed() }
         }
-        //fixme - fragment is not created at this moment
-//        navigationFragment()?.navigateToIndex(0)
+//        fixme - fragment is not created at this moment
+//        navigationFragment()?.goToFragment("0")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -42,19 +45,26 @@ class MainActivity : AppCompatActivity() {
     private fun createScene() =
             SceneBuilder()
                     .pager {
-                        list("0") {
-                            single("0a", TextFragmentFactory("0a"))
+                        single("single0", TextFragmentFactory("single0"))
+                        list("list1") {
+                            single("list1:single0", TextFragmentFactory("list1:single0"))
                         }
-                        list("1") {
-                            single("1a", TextFragmentFactory("1a"))
+                        list("list2") {
+                            single("list2:single0", TextFragmentFactory("list2:single0"))
                         }
-                        single("2a", TextFragmentFactory("2a"))
+                        pager("pager3") {
+                            single("pager3:single0", TextFragmentFactory("pager3:single0"))
+                            single("pager3:single1", TextFragmentFactory("pager3:single1"))
+                            list("pager3:list2") {
+                                single("pager3:list2:single0", TextFragmentFactory("pager3:list2:single0"))
+                            }
+                        }
                     }
-
-    fun navigationFragment() =
-            supportFragmentManager.findFragmentById(R.id.placeholder) as? NavigationFragment
 
     override fun onBackPressed() {
         navigationFragment()?.popFragment { super.onBackPressed() }
     }
+
+    fun navigationFragment() =
+            scenePlaceholder.rootFragment() as? NavigationFragment
 }
