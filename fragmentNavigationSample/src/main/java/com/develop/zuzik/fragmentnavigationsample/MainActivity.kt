@@ -33,8 +33,11 @@ class MainActivity : AppCompatActivity() {
         pop.setOnClickListener {
             navigationFragment()?.popFragment { onBackPressed() }
         }
-//        fixme - fragment is not created at this moment
-//        navigationFragment()?.goToFragment("0")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        navigationFragment()?.goToFragment("list1")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
