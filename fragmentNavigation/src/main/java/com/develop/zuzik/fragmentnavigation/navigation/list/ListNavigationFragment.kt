@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exception.AttemptToUseNavigationFragmentWhenItIsNotCreatedException
 import com.develop.zuzik.fragmentnavigation.exception.FragmentAlreadyExistException
 import com.develop.zuzik.fragmentnavigation.exception.FragmentDoesNotExistException
 import com.develop.zuzik.fragmentnavigation.navigation.interfaces.FragmentFactory
@@ -33,6 +34,8 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
         }
     }
 
+    private var viewCreated = false
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_list_navigation, container, false)
     }
@@ -54,11 +57,19 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
                     }
                 }
         transaction.commitNow()
+        viewCreated = true
+    }
+
+    private fun checkIfViewCreated() {
+        if (!viewCreated) {
+            throw AttemptToUseNavigationFragmentWhenItIsNotCreatedException()
+        }
     }
 
     //region NavigationFragment
 
     override fun addFragment(tag: String, factory: FragmentFactory) {
+        checkIfViewCreated()
         if (fragments().find { it.tag == tag } == null) {
             val fragment = factory.create()
             childFragmentManager
@@ -72,6 +83,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun removeFragment(tag: String) {
+        checkIfViewCreated()
         if (fragments().find { it.tag == tag } != null) {
             val fragment = childFragmentManager.findFragmentByTag(tag)
             childFragmentManager
@@ -84,6 +96,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun goToFragment(tag: String) {
+        checkIfViewCreated()
         if (fragments().find { it.tag == tag } != null) {
             val fragments = fragments()
             val transaction = childFragmentManager.beginTransaction()
@@ -102,11 +115,13 @@ class ListNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun pushFragment(tag: String, factory: FragmentFactory) {
+        checkIfViewCreated()
         addFragment(tag, factory)
         goToFragment(tag)
     }
 
     override fun popFragment(fail: () -> Unit) {
+        checkIfViewCreated()
         val fragments = fragments()
         val oldTopFragment = fragments.getOrNull(fragments.size - 1)
         val newTopFragment = fragments.getOrNull(fragments.size - 2)

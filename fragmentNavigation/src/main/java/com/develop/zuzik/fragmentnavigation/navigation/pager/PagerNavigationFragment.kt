@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exception.AttemptToUseNavigationFragmentWhenItIsNotCreatedException
 import com.develop.zuzik.fragmentnavigation.exception.FragmentAlreadyExistException
 import com.develop.zuzik.fragmentnavigation.exception.FragmentDoesNotExistException
 import com.develop.zuzik.fragmentnavigation.navigation.interfaces.FragmentFactory
@@ -36,6 +37,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     lateinit private var viewPager: ViewPager
     lateinit private var adapter: NavigationFragmentPagerAdapter
+    private var viewCreated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,11 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
         return view
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewCreated = true
+    }
+
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putSerializable(KEY_STATE_NAVIGATION_ENTRIES, ArrayList(adapter.entries))
@@ -63,9 +70,16 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     private fun tags() = adapter.entries.map { it.tag }
 
+    private fun checkIfViewCreated() {
+        if (!viewCreated) {
+            throw AttemptToUseNavigationFragmentWhenItIsNotCreatedException()
+        }
+    }
+
     //region NavigationFragment
 
     override fun addFragment(tag: String, factory: FragmentFactory) {
+        checkIfViewCreated()
         if (!tags().contains(tag)) {
             adapter.entries.add(NavigationEntry(tag, factory))
             adapter.notifyDataSetChanged()
@@ -75,6 +89,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun removeFragment(tag: String) {
+        checkIfViewCreated()
         if (tags().contains(tag)) {
             (0..adapter.cachedFragmentsAtPositions.size()).forEach {
                 val fragmentPosition = adapter.cachedFragmentsAtPositions.keyAt(it)
@@ -91,6 +106,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun goToFragment(tag: String) {
+        checkIfViewCreated()
         if (tags().contains(tag)) {
             viewPager.setCurrentItem(tags().indexOf(tag), true)
         } else {
@@ -99,11 +115,13 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
     }
 
     override fun pushFragment(tag: String, factory: FragmentFactory) {
+        checkIfViewCreated()
         addFragment(tag, factory)
         goToFragment(tag)
     }
 
     override fun popFragment(fail: () -> Unit) {
+        checkIfViewCreated()
         val entries = adapter.entries
         val oldTopEntry = entries.getOrNull(entries.size - 1)
         val newTopEntry = entries.getOrNull(entries.size - 2)
