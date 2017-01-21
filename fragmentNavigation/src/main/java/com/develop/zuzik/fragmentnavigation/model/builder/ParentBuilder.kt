@@ -8,6 +8,7 @@ import com.develop.zuzik.fragmentnavigation.model.exception.ParentHasChildrenWit
  * User: zuzik
  * Date: 1/21/17
  */
+//TODO: test if parent has child with tag that equal to currentNodeTag
 class ParentBuilder<Value> internal constructor(private val tag: String,
                                                 private val value: Value,
                                                 private val currentNodeTag: String?) : Builder<Value> {

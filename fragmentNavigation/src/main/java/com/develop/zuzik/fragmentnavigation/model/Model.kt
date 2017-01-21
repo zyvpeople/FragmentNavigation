@@ -1,6 +1,7 @@
 package com.develop.zuzik.fragmentnavigation.model
 
 import java.io.Serializable
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * User: zuzik
@@ -13,7 +14,7 @@ class Model<Value>(state: Node<Value>) : Serializable {
     val state: Node<Value>
         get() = _state.children.first().copy()
 
-    private val listeners = mutableSetOf<ModelListener<Value>>()
+    private val listeners = CopyOnWriteArraySet<ModelListener<Value>>()
 
     fun addListener(listener: ModelListener<Value>) {
         listeners.add(listener)

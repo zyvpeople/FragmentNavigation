@@ -4,6 +4,7 @@ import android.app.Application
 import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.builder.ModelBuilder
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
+import com.develop.zuzik.fragmentnavigation.model.fragment.ModelListNavigationFragmentFactory
 
 /**
  * User: zuzik
@@ -17,6 +18,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         model = ModelBuilder<ModelFragmentFactory>()
-                .child("a1", ModelTextFragmentFactory("a1"))
+                .parent("a1", ModelListNavigationFragmentFactory(), "b1") {
+                    child("b1", ModelTextFragmentFactory("b1"))
+                    child("b2", ModelTextFragmentFactory("b2"))
+                }
     }
 }

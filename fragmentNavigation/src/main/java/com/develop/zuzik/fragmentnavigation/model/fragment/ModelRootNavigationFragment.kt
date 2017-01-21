@@ -38,12 +38,22 @@ class ModelRootNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        subscribeOnModel()
+
     }
 
     override fun onDestroyView() {
-        unsubscribeFromModel()
+
         super.onDestroyView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        subscribeOnModel()
+    }
+
+    override fun onStop() {
+        unsubscribeFromModel()
+        super.onStop()
     }
 
     private fun subscribeOnModel() {
@@ -60,7 +70,7 @@ class ModelRootNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
         if (factory != null && childFragmentManager.findFragmentByTag(node.tag) == null) {
             childFragmentManager
                     .beginTransaction()
-                    .add(R.id.placeholder, factory.crate())
+                    .add(R.id.placeholder, factory.create(listOf(node.tag)), node.tag)
                     .commitNow()
         }
     }

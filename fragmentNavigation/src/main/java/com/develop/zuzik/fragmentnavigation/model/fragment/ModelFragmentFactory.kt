@@ -8,5 +8,5 @@ import java.io.Serializable
  * Date: 1/21/17
  */
 interface ModelFragmentFactory : Serializable {
-    fun crate(): Fragment
+    fun create(path: List<String>): Fragment
 }
