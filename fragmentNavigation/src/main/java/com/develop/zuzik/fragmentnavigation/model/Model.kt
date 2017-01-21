@@ -1,10 +1,13 @@
 package com.develop.zuzik.fragmentnavigation.model
 
+import java.io.Serializable
+
 /**
  * User: zuzik
  * Date: 1/17/17
  */
-class Model<Value>(state: Node<Value>) {
+//TODO: add test modelIsSerializable
+class Model<Value>(state: Node<Value>) : Serializable {
 
     private var _state = Node<Value>("", null, null, mutableListOf(state))
     val state: Node<Value>
