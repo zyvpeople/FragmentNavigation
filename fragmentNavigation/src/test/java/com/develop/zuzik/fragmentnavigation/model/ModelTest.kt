@@ -11,12 +11,12 @@ import org.mockito.Mockito.*
  */
 class ModelTest {
 
-    private val model = Model<FakeFactory>(
+    private val model = Model<String>(
             createParent("a1", "b1", listOf(
                     createParent("b1", null, listOf(
                             createChild("c1"))),
                     createChild("b2"))))
-    private val listener: ModelListener<FakeFactory> = mock(ModelListener::class.java) as ModelListener<FakeFactory>
+    private val listener: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
     @Before
     fun setUp() {
@@ -590,7 +590,7 @@ class ModelTest {
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createChild("b2")))
-        val listener2: ModelListener<FakeFactory> = mock(ModelListener::class.java) as ModelListener<FakeFactory>
+        val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)
         model.addListener(listener2)
@@ -624,7 +624,7 @@ class ModelTest {
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createChild("b2")))
-        val listener2: ModelListener<FakeFactory> = mock(ModelListener::class.java) as ModelListener<FakeFactory>
+        val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)
         model.addListener(listener2)
@@ -639,10 +639,8 @@ class ModelTest {
 
     //endregion
 
-    private fun createParent(tag: String, currentChildTag: String?, children: List<Node<FakeFactory>>) =
-            Node(tag, FakeFactory(), currentChildTag, children.toMutableList())
+    private fun createParent(tag: String, currentChildTag: String?, children: List<Node<String>>) =
+            Node(tag, "", currentChildTag, children.toMutableList())
 
     private fun createChild(tag: String) = createParent(tag, null, listOf())
-
-    private data class FakeFactory(val text: String = "")
 }
