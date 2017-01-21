@@ -1,8 +1,9 @@
 package com.develop.zuzik.fragmentnavigation.model.builder
 
 import com.develop.zuzik.fragmentnavigation.model.Node
+import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildWithTagException
 import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildrenException
-import com.develop.zuzik.fragmentnavigation.model.exception.ParentHasChildrenWithEqualTags
+import com.develop.zuzik.fragmentnavigation.model.exception.ParentHasChildrenWithEqualTagsException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -92,7 +93,7 @@ class ModelBuilderTest {
                 }
     }
 
-    @Test(expected = ParentHasChildrenWithEqualTags::class)
+    @Test(expected = ParentHasChildrenWithEqualTagsException::class)
     fun parentThrowsExceptionWhenRootParentNodeHasChildrenWithEqualTag() {
         ModelBuilder<String>()
                 .parent("a1", "a1Value", "b1") {
@@ -105,12 +106,32 @@ class ModelBuilderTest {
                 }
     }
 
-    @Test(expected = ParentHasChildrenWithEqualTags::class)
+    @Test(expected = ParentHasChildrenWithEqualTagsException::class)
     fun parentThrowsExceptionWhenNotRootParentNodeHasChildrenWithEqualTag() {
         ModelBuilder<String>()
                 .parent("a1", "a1Value", "b1") {
                     parent("b1", "b1Value", null) {
                         child("c1", "c1Value")
+                        child("c1", "c1Value")
+                    }
+                }
+    }
+
+    @Test(expected = ParentDoesNotHaveChildWithTagException::class)
+    fun parentThrowsExceptionWhenRootParentDoesNotHaveCurrentNodeWithTag() {
+        ModelBuilder<String>()
+                .parent("a1", "a1Value", "b2") {
+                    parent("b1", "b1Value", null) {
+                        child("c1", "c1Value")
+                    }
+                }
+    }
+
+    @Test(expected = ParentDoesNotHaveChildWithTagException::class)
+    fun parentThrowsExceptionWhenNotRootParentDoesNotHaveCurrentNodeWithTag() {
+        ModelBuilder<String>()
+                .parent("a1", "a1Value", "b1") {
+                    parent("b1", "b1Value", "c2") {
                         child("c1", "c1Value")
                     }
                 }

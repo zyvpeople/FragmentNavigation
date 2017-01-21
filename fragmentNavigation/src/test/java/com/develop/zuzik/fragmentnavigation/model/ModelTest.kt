@@ -49,31 +49,6 @@ class ModelTest {
                         createChild("b3")))
 
         model.add(createChild("b3"), listOf("a1"))
-//
-//    @Test
-//    fun goToDoesNotSetCurrentNodeTagWhenPathIsEmpty() {
-//        val expectedState = createParent("1", "1", listOf(
-//                createParent("1", null, listOf(
-//                        createChild("1"))),
-//                createChild("2")))
-//
-//        model.goTo("2", listOf())
-//
-//        assertEquals(expectedState, model.state)
-//    }
-//
-//    @Test
-//    fun goToDoesNotCallListenerWhenPathIsEmpty() {
-//        val expectedState = createParent("1", "1", listOf(
-//                createParent("1", null, listOf(
-//                        createChild("1"))),
-//                createChild("2")))
-//
-//        model.goTo("2", listOf())
-//
-//        verify(listener, never()).invoke(expectedState)
-//    }
-
         verify(listener, only()).invoke(expectedState)
     }
 

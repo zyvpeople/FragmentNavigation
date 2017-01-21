@@ -1,14 +1,14 @@
 package com.develop.zuzik.fragmentnavigation.model.builder
 
 import com.develop.zuzik.fragmentnavigation.model.Node
+import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildWithTagException
 import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildrenException
-import com.develop.zuzik.fragmentnavigation.model.exception.ParentHasChildrenWithEqualTags
+import com.develop.zuzik.fragmentnavigation.model.exception.ParentHasChildrenWithEqualTagsException
 
 /**
  * User: zuzik
  * Date: 1/21/17
  */
-//TODO: test if parent has child with tag that equal to currentNodeTag
 class ParentBuilder<Value> internal constructor(private val tag: String,
                                                 private val value: Value,
                                                 private val currentNodeTag: String?) : Builder<Value> {
@@ -21,7 +21,10 @@ class ParentBuilder<Value> internal constructor(private val tag: String,
             throw ParentDoesNotHaveChildrenException(node.tag)
         }
         if (node.hasChildrenWithSameTag()) {
-            throw ParentHasChildrenWithEqualTags(node.tag)
+            throw ParentHasChildrenWithEqualTagsException(node.tag)
+        }
+        if (currentNodeTag != null && node.children.firstOrNull { it.tag == currentNodeTag } == null) {
+            throw ParentDoesNotHaveChildWithTagException(node.tag, currentNodeTag)
         }
         return node
     }
