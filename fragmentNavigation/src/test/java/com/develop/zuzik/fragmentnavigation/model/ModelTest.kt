@@ -640,7 +640,7 @@ class ModelTest {
     //endregion
 
     private fun createParent(tag: String, currentChildTag: String?, children: List<Node<FakeFactory>>) =
-            Node(tag, currentChildTag, children.toMutableList())
+            Node(tag, FakeFactory(), currentChildTag, children.toMutableList())
 
     private fun createChild(tag: String) = createParent(tag, null, listOf())
 

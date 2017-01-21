@@ -6,15 +6,16 @@ import java.io.Serializable
  * User: zuzik
  * Date: 1/17/17
  */
-data class Node<T>(val tag: String,
-                   val currentChildTag: String?,
-                   val children: MutableList<Node<T>>) : Serializable {
+data class Node<Value>(val tag: String,
+                       val value: Value?,
+                       val currentChildTag: String?,
+                       val children: MutableList<Node<Value>>) : Serializable {
 
     fun hasChild(childTag: String) = children.firstOrNull { it.tag == childTag } != null
 
-    fun findNode(path: List<String>): Node<T>? = findNode(this, path)
+    fun findNode(path: List<String>): Node<Value>? = findNode(this, path)
 
-    private fun findNode(node: Node<T>, path: List<String>): Node<T>? =
+    private fun findNode(node: Node<Value>, path: List<String>): Node<Value>? =
             when (path.size) {
                 0 -> null
                 1 -> node

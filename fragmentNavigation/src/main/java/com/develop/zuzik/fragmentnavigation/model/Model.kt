@@ -4,23 +4,23 @@ package com.develop.zuzik.fragmentnavigation.model
  * User: zuzik
  * Date: 1/17/17
  */
-class Model<T>(state: Node<T>) {
+class Model<Value>(state: Node<Value>) {
 
-    private var _state = Node("", null, mutableListOf(state))
-    val state: Node<T>
+    private var _state = Node<Value>("", null, null, mutableListOf(state))
+    val state: Node<Value>
         get() = _state.children.first().copy()
 
-    private val listeners = mutableSetOf<ModelListener<T>>()
+    private val listeners = mutableSetOf<ModelListener<Value>>()
 
-    fun addListener(listener: ModelListener<T>) {
+    fun addListener(listener: ModelListener<Value>) {
         listeners.add(listener)
     }
 
-    fun removeListener(listener: ModelListener<T>) {
+    fun removeListener(listener: ModelListener<Value>) {
         listeners.remove(listener)
     }
 
-    fun add(node: Node<T>, path: List<String>) {
+    fun add(node: Node<Value>, path: List<String>) {
         _state
                 .findNode(path)
                 ?.let { if (!it.hasChild(node.tag)) it else null }
