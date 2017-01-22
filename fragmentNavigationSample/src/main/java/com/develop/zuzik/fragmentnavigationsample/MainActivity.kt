@@ -5,14 +5,13 @@ import android.support.v7.app.AppCompatActivity
 import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.ModelListener
 import com.develop.zuzik.fragmentnavigation.model.Node
+import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentPlaceholder
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelNavigationFragmentContainer
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelRootNavigationFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
-
-//    lateinit var scenePlaceholder: ScenePlaceholder
 
     private data class FullPath(val path: List<String>, val tag: String)
 
@@ -23,16 +22,8 @@ class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (supportFragmentManager.findFragmentByTag(model.state.tag) == null) {
-            supportFragmentManager
-                    .beginTransaction()
-                    .add(R.id.placeholder, ModelRootNavigationFragment(), model.state.tag)
-                    .commitNow()
-        }
+        FragmentPlaceholder(model, supportFragmentManager, R.id.placeholder).show()
 
-
-//        scenePlaceholder = ScenePlaceholder(createScene(), supportFragmentManager, R.id.placeholder)
-//        scenePlaceholder.showScene()
         goTo.setOnClickListener {
             fullPath()?.let {
                 model.goTo(it.tag, it.path)
