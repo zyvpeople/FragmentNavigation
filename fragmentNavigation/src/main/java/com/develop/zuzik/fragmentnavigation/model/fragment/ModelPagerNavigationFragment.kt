@@ -3,6 +3,7 @@ package com.develop.zuzik.fragmentnavigation.model.fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +15,18 @@ import java.util.*
 
 /**
  * User: zuzik
- * Date: 12/22/16
+ * Date: 12/24/16
  */
-
-class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
+class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
 
     companion object {
 
         private val KEY_PATH = "KEY_PATH"
 
-        fun create(path: List<String>): ModelListNavigationFragment {
+        fun create(path: List<String>): ModelPagerNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_PATH, ArrayList(path))
-            val fragment = ModelListNavigationFragment()
+            val fragment = ModelPagerNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -36,6 +36,8 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
     //TODO: incorrect because child node can be changed and parent will update screen, need to check by children and current position
     private var lastSavedCurrentNode: Node<ModelFragmentFactory>? = null
     private var container: ModelNavigationFragmentContainer? = null
+    lateinit private var viewPager: ViewPager
+    lateinit private var adapter: ModelNavigationFragmentPagerAdapter
 
     override val model: Model<ModelFragmentFactory>?
         get() = container?.model
@@ -50,13 +52,21 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
         super.onDetach()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        path = arguments.getSerializable(KEY_PATH) as List<String>
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_model_list_navigation, container, false)
+        val view = inflater?.inflate(R.layout.fragment_pager_navigation, container, false)
+        viewPager = view?.findViewById(R.id.viewPager) as ViewPager
+        adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, Node("", null, null, mutableListOf()), path)
+        viewPager.adapter = adapter
+        return view
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        path = arguments.getSerializable(KEY_PATH) as List<String>
         subscribeOnModel()
     }
 
@@ -76,37 +86,11 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
 
     private fun update(node: Node<ModelFragmentFactory>) {
         Node<ModelFragmentFactory>("", null, null, mutableListOf(node)).findNode(path)?.let { currentNode ->
-            if (currentNode != lastSavedCurrentNode) {
-                lastSavedCurrentNode = currentNode
-                val transaction = childFragmentManager.beginTransaction()
-                fragments().map { it.tag }
-                        .subtract(currentNode.children.map { it.tag })
-                        .forEach {
-                            childFragmentManager.findFragmentByTag(it)?.let {
-                                transaction.remove(it)
-                            }
-                        }
-                currentNode.children.forEach {
-                    val factory = it.value
-                    if (factory != null) {
-                        var fragment = childFragmentManager.findFragmentByTag(it.tag)
-                        if (fragment == null) {
-                            fragment = factory.create(path + it.tag)
-                            transaction.add(R.id.placeholder, fragment, it.tag)
-                        }
-                        if (currentNode.currentChildTag == it.tag) {
-                            transaction.attach(fragment)
-                        } else {
-                            transaction.detach(fragment)
-                        }
-                    }
-                }
-                transaction.commitNow()
-            }
+            adapter.node = currentNode
+            adapter.notifyDataSetChanged()
+            viewPager.setCurrentItem(currentNode.children.indexOfFirst { it.tag == currentNode.currentChildTag }, true)
         }
     }
-
-    private fun fragments(): List<Fragment> = (childFragmentManager.fragments ?: emptyList()).filterNotNull()
 
     val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
         override fun invoke(state: Node<ModelFragmentFactory>) {

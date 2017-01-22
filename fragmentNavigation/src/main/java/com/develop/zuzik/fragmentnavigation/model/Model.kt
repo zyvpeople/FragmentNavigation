@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Date: 1/17/17
  */
 //TODO: add test modelIsSerializable
+//TODO: add test currentNodeTag is null when remove current node
 class Model<Value>(state: Node<Value>) : Serializable {
 
     private var _state = Node<Value>("", null, null, mutableListOf(state))
