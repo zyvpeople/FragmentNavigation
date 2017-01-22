@@ -6,25 +6,60 @@ import java.io.Serializable
  * User: zuzik
  * Date: 1/17/17
  */
-data class Node<Value>(val tag: String,
-                       val value: Value?,
-                       val currentChildTag: String?,
-                       val children: MutableList<Node<Value>>) : Serializable {
+//TODO: add tests
+//TODO: copy fields in constructor
+//TODO: copy
+//TODO: hasChild
+//TODO: findNode
+class Node<Value>(tag: String,
+                  value: Value,
+                  currentChildTag: String?,
+                  children: List<Node<Value>>) : Serializable {
+
+    var tag = tag
+        internal set
+    var value = value
+        internal set
+    var currentChildTag = currentChildTag
+        internal set
+    var children = children.map { it.copy() }.toMutableList()
+        internal set
+
+    fun copy(): Node<Value> = Node(tag, value, currentChildTag, children)
 
     fun hasChild(childTag: String) = children.firstOrNull { it.tag == childTag } != null
 
-    fun findNode(path: List<String>): Node<Value>? = findNode(this, path)
-
-    private fun findNode(node: Node<Value>, path: List<String>): Node<Value>? =
+    fun findNode(path: List<String>): Node<Value>? =
             when (path.size) {
                 0 -> null
-                1 -> node
-                        .children
-                        .firstOrNull { it.tag == path[0] }
-                else -> node
-                        .children
-                        .filter { it.tag == path[0] }
-                        .map { findNode(it, path.slice(1..path.size - 1)) }
-                        .firstOrNull()
+                else -> {
+                    val isCurrentNode = path[0] == tag
+                    if (isCurrentNode) {
+                        when (path.size) {
+                            1 -> this
+                            2 -> children
+                                    .firstOrNull { it.tag == path[1] }
+                            else -> children
+                                    .filter { it.tag == path[1] }
+                                    .map { it.findNode(path.slice(2..path.size - 1)) }
+                                    .firstOrNull()
+                        }
+                    } else {
+                        null
+                    }
+                }
+            }
+
+
+    override fun equals(other: Any?) =
+            if (other === this) {
+                true
+            } else if (other is Node<*>) {
+                tag == other.tag
+                        && value == other.value
+                        && currentChildTag == other.currentChildTag
+                        && children == other.children
+            } else {
+                false
             }
 }

@@ -1,5 +1,6 @@
 package com.develop.zuzik.fragmentnavigation.model.builder
 
+import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.Node
 import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildWithTagException
 import com.develop.zuzik.fragmentnavigation.model.exception.ParentDoesNotHaveChildrenException
@@ -37,6 +38,10 @@ class ParentBuilder<Value> internal constructor(private val tag: String,
         val builder = ParentBuilder<Value>(tag, value, currentNodeTag)
         builder.addChildren()
         builders += builder
+    }
+
+    fun model(model: Model<Value>) {
+        builders += ChildModelBuilder(model)
     }
 
     private fun Node<Value>.hasChildrenWithSameTag(): Boolean =

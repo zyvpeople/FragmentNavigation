@@ -13,15 +13,15 @@ import com.develop.zuzik.fragmentnavigation.model.Node
 
 internal class ModelNavigationFragmentPagerAdapter(
         fragmentManager: FragmentManager,
-        var node: Node<ModelFragmentFactory>,
+        var node: Node<ModelFragmentFactory>?,
         val path: List<String>) : FragmentStatePagerAdapter(fragmentManager) {
 
-    override fun getItem(position: Int) = node.children[position].value?.create(path)
+    override fun getItem(position: Int) = node?.children?.getOrNull(position)?.value?.create(path)
 
-    override fun getCount() = node.children.size
+    override fun getCount() = node?.children?.size ?: 0
 
     override fun getItemPosition(fragment: Any?): Int {
-        return if (fragment is Fragment && node.children.map { it.tag }.contains(fragment.tag)) {
+        return if (fragment is Fragment && node != null && node!!.children.map { it.tag }.contains(fragment.tag)) {
             super.getItemPosition(fragment)
         } else {
             PagerAdapter.POSITION_NONE

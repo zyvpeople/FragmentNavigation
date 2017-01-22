@@ -75,7 +75,7 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
     }
 
     private fun update(node: Node<ModelFragmentFactory>) {
-        Node<ModelFragmentFactory>("", null, null, mutableListOf(node)).findNode(path)?.let { currentNode ->
+        node.findNode(path)?.let { currentNode ->
             if (currentNode != lastSavedCurrentNode) {
                 lastSavedCurrentNode = currentNode
                 val transaction = childFragmentManager.beginTransaction()
@@ -87,18 +87,15 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
                             }
                         }
                 currentNode.children.forEach {
-                    val factory = it.value
-                    if (factory != null) {
-                        var fragment = childFragmentManager.findFragmentByTag(it.tag)
-                        if (fragment == null) {
-                            fragment = factory.create(path + it.tag)
-                            transaction.add(R.id.placeholder, fragment, it.tag)
-                        }
-                        if (currentNode.currentChildTag == it.tag) {
-                            transaction.attach(fragment)
-                        } else {
-                            transaction.detach(fragment)
-                        }
+                    var fragment = childFragmentManager.findFragmentByTag(it.tag)
+                    if (fragment == null) {
+                        fragment = it.value.create(path + it.tag)
+                        transaction.add(R.id.placeholder, fragment, it.tag)
+                    }
+                    if (currentNode.currentChildTag == it.tag) {
+                        transaction.attach(fragment)
+                    } else {
+                        transaction.detach(fragment)
                     }
                 }
                 transaction.commitNow()

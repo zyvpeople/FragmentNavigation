@@ -9,11 +9,14 @@ import java.util.concurrent.CopyOnWriteArraySet
  */
 //TODO: add test modelIsSerializable
 //TODO: add test currentNodeTag is null when remove current node
+//TODO: add test - add node save copy
+//TODO: add test - state return copy
+//TODO: add test - listener take copy
 class Model<Value>(state: Node<Value>) : Serializable {
 
-    private var _state = Node<Value>("", null, null, mutableListOf(state))
+    private var _state = state.copy()
     val state: Node<Value>
-        get() = _state.children.first().copy()
+        get() = _state.copy()
 
     private val listeners = CopyOnWriteArraySet<ModelListener<Value>>()
 
@@ -49,15 +52,9 @@ class Model<Value>(state: Node<Value>) : Serializable {
         _state
                 .findNode(path)
                 ?.let { if (tag == null || it.hasChild(tag)) it else null }
-                ?.let { child ->
-                    val parent = if (path.size == 1) _state else _state.findNode(path.slice(0..path.size - 2))
-                    if (parent != null) {
-                        val indexOfChild = parent.children.indexOfFirst { it.tag == child.tag }
-                        if (indexOfChild != -1) {
-                            parent.children[indexOfChild] = child.copy(currentChildTag = tag)
-                            notifyStateChanged()
-                        }
-                    }
+                ?.let {
+                    it.currentChildTag = tag
+                    notifyStateChanged()
                 }
     }
 

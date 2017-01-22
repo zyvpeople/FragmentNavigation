@@ -60,7 +60,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_pager_navigation, container, false)
         viewPager = view?.findViewById(R.id.viewPager) as ViewPager
-        adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, Node("", null, null, mutableListOf()), path)
+        adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, null, path)
         viewPager.adapter = adapter
         return view
     }
@@ -85,7 +85,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     }
 
     private fun update(node: Node<ModelFragmentFactory>) {
-        Node<ModelFragmentFactory>("", null, null, mutableListOf(node)).findNode(path)?.let { currentNode ->
+        node.findNode(path)?.let { currentNode ->
             adapter.node = currentNode
             adapter.notifyDataSetChanged()
             viewPager.setCurrentItem(currentNode.children.indexOfFirst { it.tag == currentNode.currentChildTag }, true)
