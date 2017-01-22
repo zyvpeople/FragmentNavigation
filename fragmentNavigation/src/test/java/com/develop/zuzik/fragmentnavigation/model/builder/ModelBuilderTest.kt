@@ -75,7 +75,7 @@ class ModelBuilderTest {
                         child("c3", "c3Value")
                     }
                     child("b3", "b3Value")
-                    model(ModelBuilder<String>()
+                    child(ModelBuilder<String>()
                             .parent("b4", "b4Value", "c1") {
                                 child("c1", "c1Value")
                             })

@@ -6,7 +6,7 @@ import com.develop.zuzik.fragmentnavigation.model.Model
  * User: zuzik
  * Date: 1/21/17
  */
-class ModelBuilder<Value> {
+open class ModelBuilder<Value> {
 
     fun child(tag: String, value: Value): Model<Value> = Model(ChildBuilder(tag, value).build())
 

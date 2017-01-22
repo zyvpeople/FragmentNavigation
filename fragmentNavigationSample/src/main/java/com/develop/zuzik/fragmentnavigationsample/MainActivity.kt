@@ -3,6 +3,7 @@ package com.develop.zuzik.fragmentnavigationsample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.develop.zuzik.fragmentnavigation.model.Model
+import com.develop.zuzik.fragmentnavigation.model.ModelListener
 import com.develop.zuzik.fragmentnavigation.model.Node
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelNavigationFragmentContainer
@@ -60,7 +61,38 @@ class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
         }
     }
 
-//    override fun onStart() {
+    override fun onStart() {
+        super.onStart()
+        model.addListener(listener)
+        update(model.state)
+    }
+
+    override fun onStop() {
+        model.removeListener(listener)
+        super.onStop()
+    }
+
+    private fun update(node: Node<ModelFragmentFactory>) {
+        path.text = currentNodePath("", node)
+    }
+
+    private fun currentNodePath(path: String, node: Node<ModelFragmentFactory>): String {
+        val newPath = "$path:${node.tag}"
+        val currentNode = node.children.firstOrNull { it.tag == node.currentChildTag }
+        return if (currentNode != null) {
+            currentNodePath(newPath, currentNode)
+        } else {
+            newPath
+        }
+    }
+
+    val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
+        override fun invoke(state: Node<ModelFragmentFactory>) {
+            update(state)
+        }
+    }
+
+    //    override fun onStart() {
 //        super.onStart()
 //        navigationFragment()?.goToFragment("list1")
 //    }

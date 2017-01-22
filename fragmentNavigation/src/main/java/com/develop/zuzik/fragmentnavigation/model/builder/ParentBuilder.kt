@@ -34,14 +34,14 @@ class ParentBuilder<Value> internal constructor(private val tag: String,
         builders += ChildBuilder(tag, value)
     }
 
+    fun child(model: Model<Value>) {
+        builders += ChildModelBuilder(model)
+    }
+
     fun parent(tag: String, value: Value, currentNodeTag: String?, addChildren: ParentBuilder<Value>.() -> Unit) {
         val builder = ParentBuilder<Value>(tag, value, currentNodeTag)
         builder.addChildren()
         builders += builder
-    }
-
-    fun model(model: Model<Value>) {
-        builders += ChildModelBuilder(model)
     }
 
     private fun Node<Value>.hasChildrenWithSameTag(): Boolean =

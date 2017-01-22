@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/path"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        tools:text="Path"/>
+
     <FrameLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
