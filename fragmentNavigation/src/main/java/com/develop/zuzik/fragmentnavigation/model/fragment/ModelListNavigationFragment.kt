@@ -3,7 +3,6 @@ package com.develop.zuzik.fragmentnavigation.model.fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +18,6 @@ import java.util.*
  */
 
 class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
-
-    private data class State(val currentChildTag: String?,
-                             val childrenTags: List<String>)
 
     companion object {
 
@@ -80,9 +76,14 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
     private fun update(node: Node<ModelFragmentFactory>) {
         node.findNode(path)?.let { currentNode ->
             val newState = State(currentNode.currentChildTag, currentNode.children.map { it.tag })
-            if (newState != lastSavedState) {
-                lastSavedState = newState
-                val transaction = childFragmentManager.beginTransaction()
+            if (newState == lastSavedState) {
+                return
+            }
+            lastSavedState = newState
+
+            val transaction = childFragmentManager.beginTransaction()
+
+            val removeFragmentsOfRemovedNodes = {
                 fragments().map { it.tag }
                         .subtract(currentNode.children.map { it.tag })
                         .forEach {
@@ -90,6 +91,9 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
                                 transaction.remove(it)
                             }
                         }
+            }
+
+            val attachFragmentForCurrentNodeAndDetachAnother = {
                 currentNode.children.forEach {
                     var fragment = childFragmentManager.findFragmentByTag(it.tag)
                     if (fragment == null) {
@@ -102,8 +106,12 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
                         transaction.detach(fragment)
                     }
                 }
-                transaction.commitNow()
             }
+
+            removeFragmentsOfRemovedNodes()
+            attachFragmentForCurrentNodeAndDetachAnother()
+
+            transaction.commitNow()
         }
     }
 
