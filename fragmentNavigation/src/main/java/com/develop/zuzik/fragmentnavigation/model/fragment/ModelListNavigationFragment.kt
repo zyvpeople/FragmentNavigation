@@ -3,6 +3,7 @@ package com.develop.zuzik.fragmentnavigation.model.fragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,9 @@ import java.util.*
 
 class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
 
+    private data class State(val currentChildTag: String?,
+                             val childrenTags: List<String>)
+
     companion object {
 
         private val KEY_PATH = "KEY_PATH"
@@ -33,8 +37,7 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
     }
 
     private var path: List<String> = emptyList()
-    //TODO: incorrect because child node can be changed and parent will update screen, need to check by children and current position
-    private var lastSavedCurrentNode: Node<ModelFragmentFactory>? = null
+    private var lastSavedState: State? = null
     private var container: ModelNavigationFragmentContainer? = null
 
     override val model: Model<ModelFragmentFactory>?
@@ -76,8 +79,9 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
 
     private fun update(node: Node<ModelFragmentFactory>) {
         node.findNode(path)?.let { currentNode ->
-            if (currentNode != lastSavedCurrentNode) {
-                lastSavedCurrentNode = currentNode
+            val newState = State(currentNode.currentChildTag, currentNode.children.map { it.tag })
+            if (newState != lastSavedState) {
+                lastSavedState = newState
                 val transaction = childFragmentManager.beginTransaction()
                 fragments().map { it.tag }
                         .subtract(currentNode.children.map { it.tag })
