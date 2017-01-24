@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Date: 1/17/17
  */
 //TODO: add test modelIsSerializable
-//TODO: add test currentNodeTag is null when remove current node
 //TODO: add test - add node save copy
 //TODO: add test - state return copy
 //TODO: add test - listener take copy
@@ -44,6 +43,9 @@ class Model<Value>(state: Node<Value>) : Serializable {
                 ?.let { if (it.hasChild(tag)) it else null }
                 ?.apply {
                     children.removeAll { it.tag == tag }
+                    if (currentChildTag == tag) {
+                        currentChildTag = null
+                    }
                     notifyStateChanged()
                 }
     }

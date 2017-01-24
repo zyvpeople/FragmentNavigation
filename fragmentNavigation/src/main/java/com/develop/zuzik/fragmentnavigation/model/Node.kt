@@ -9,8 +9,6 @@ import java.io.Serializable
 //TODO: add tests
 //TODO: copy fields in constructor
 //TODO: copy
-//TODO: hasChild
-//TODO: findNode
 class Node<Value>(tag: String,
                   value: Value,
                   currentChildTag: String?,

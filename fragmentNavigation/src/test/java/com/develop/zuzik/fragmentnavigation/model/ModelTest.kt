@@ -15,7 +15,9 @@ class ModelTest {
             createParent("a1", "b1", listOf(
                     createParent("b1", null, listOf(
                             createChild("c1"))),
-                    createChild("b2"))))
+                    createParent("b2", "c1", listOf(
+                            createChild("c1"),
+                            createChild("c2"))))))
     private val listener: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
     @Before
@@ -31,7 +33,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2"),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2"))),
                         createChild("b3")))
 
         model.add(createChild("b3"), listOf("a1"))
@@ -45,7 +49,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2"),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2"))),
                         createChild("b3")))
 
         model.add(createChild("b3"), listOf("a1"))
@@ -59,7 +65,9 @@ class ModelTest {
                         createParent("b1", null, listOf(
                                 createChild("c1"),
                                 createChild("c2"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("c2"), listOf("a1", "b1"))
 
@@ -73,7 +81,9 @@ class ModelTest {
                         createParent("b1", null, listOf(
                                 createChild("c1"),
                                 createChild("c2"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("c2"), listOf("a1", "b1"))
 
@@ -86,7 +96,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("c2"), listOf())
 
@@ -99,7 +111,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.add(createChild("c2"), listOf())
 
@@ -112,7 +125,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("b2"), listOf("a1"))
 
@@ -125,7 +140,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.add(createChild("b2"), listOf("a1"))
 
@@ -138,7 +154,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("c1"), listOf("a1", "b1"))
 
@@ -151,7 +169,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.add(createChild("c1"), listOf("a1", "b1"))
 
@@ -164,7 +183,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("b3"), listOf("b1"))
 
@@ -177,7 +198,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.add(createChild("b3"), listOf("b1"))
 
@@ -190,7 +212,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.add(createChild("c2"), listOf("a1", "b3"))
 
@@ -203,7 +227,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.add(createChild("c2"), listOf("a1", "b3"))
 
@@ -244,7 +269,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("b2", listOf())
 
@@ -257,7 +284,8 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
 
         model.remove("b2", listOf())
 
@@ -270,7 +298,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("b3", listOf("a1"))
 
@@ -296,7 +326,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("c2", listOf("a1", "b1"))
 
@@ -322,7 +354,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("b2", listOf("a2"))
 
@@ -348,7 +382,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("c1", listOf("a1", "b3"))
 
@@ -368,6 +404,59 @@ class ModelTest {
         verify(listener, never()).invoke(expectedState)
     }
 
+    @Test
+    fun removeSetsNullToCurrentNodeTagIfRemoveCurrentNodeFromRootNode() {
+        val expectedState =
+                createParent("a1", null, listOf(
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
+
+        model.remove("b1", listOf("a1"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeDoesNotSetNullToCurrentNodeTagIfRemoveNotCurrentNodeFromRootNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1")))))
+
+        model.remove("b2", listOf("a1"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeSetsNullToCurrentNodeTagIfRemoveCurrentNodeFromNotRootNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", null, listOf(
+                                createChild("c2")))))
+
+        model.remove("c1", listOf("a1", "b2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeDoesNotSetNullToCurrentNodeTagIfRemoveNotCurrentNodeFromNotRootNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1")))))
+
+        model.remove("c2", listOf("a1", "b2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
     //endregion
 
     //region GoTO
@@ -378,7 +467,9 @@ class ModelTest {
                 createParent("a1", "b2", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("b2", listOf("a1"))
 
@@ -391,7 +482,9 @@ class ModelTest {
                 createParent("a1", "b2", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("b2", listOf("a1"))
 
@@ -404,7 +497,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", "c1", listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("c1", listOf("a1", "b1"))
 
@@ -417,7 +512,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", "c1", listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("c1", listOf("a1", "b1"))
 
@@ -430,7 +527,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("c1", listOf())
 
@@ -447,7 +546,7 @@ class ModelTest {
 
         model.goTo("c1", listOf())
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -456,7 +555,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("b3", listOf("a1"))
 
@@ -473,7 +574,7 @@ class ModelTest {
 
         model.goTo("b3", listOf("a1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -482,7 +583,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.goTo("c2", listOf("a1", "b1"))
 
@@ -499,7 +602,7 @@ class ModelTest {
 
         model.goTo("c2", listOf("a1", "b1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -508,7 +611,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("b2", listOf("a2"))
 
@@ -525,7 +630,7 @@ class ModelTest {
 
         model.remove("b2", listOf("a2"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -534,7 +639,9 @@ class ModelTest {
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.remove("c2", listOf("a1", "b1"))
 
@@ -551,7 +658,7 @@ class ModelTest {
 
         model.remove("c2", listOf("a1", "b1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     //endregion
@@ -564,7 +671,9 @@ class ModelTest {
                 createParent("a1", "b2", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
         val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)
@@ -582,7 +691,9 @@ class ModelTest {
                 createParent("a1", "b2", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
 
         model.addListener(listener)
         model.addListener(listener)
@@ -598,7 +709,9 @@ class ModelTest {
                 createParent("a1", "b2", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createChild("c2")))))
         val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)
@@ -609,7 +722,7 @@ class ModelTest {
         model.goTo("b2", listOf("a1"))
 
         verify(listener, times(1)).invoke(expectedState)
-        verify(listener2, never()).invoke(expectedState)
+        verifyZeroInteractions(listener2)
     }
 
     //endregion
