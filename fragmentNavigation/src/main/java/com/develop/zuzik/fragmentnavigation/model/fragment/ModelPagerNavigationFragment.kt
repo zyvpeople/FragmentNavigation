@@ -59,6 +59,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_pager_navigation, container, false)
         viewPager = view?.findViewById(R.id.viewPager) as ViewPager
+        viewPager.addOnPageChangeListener(onPageChangeListener)
         return view
     }
 
@@ -68,6 +69,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     }
 
     override fun onDestroyView() {
+        viewPager.removeOnPageChangeListener(onPageChangeListener)
         unsubscribeFromModel()
         super.onDestroyView()
     }
@@ -104,6 +106,15 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
         override fun invoke(state: Node<ModelFragmentFactory>) {
             update(state)
+        }
+    }
+
+    val onPageChangeListener: ViewPager.SimpleOnPageChangeListener = object : ViewPager.SimpleOnPageChangeListener() {
+        override fun onPageSelected(position: Int) {
+            model?.state?.findNode(path)?.children?.getOrNull(position)?.let {
+                lastSavedState = lastSavedState?.copy(currentChildTag = it.tag)
+                model?.goTo(it.tag, path)
+            }
         }
     }
 }
