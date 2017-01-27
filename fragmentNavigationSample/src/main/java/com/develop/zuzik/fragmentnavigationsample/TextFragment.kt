@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.develop.zuzik.fragmentnavigation.navigation.interfaces.NavigationFragment
 import kotlinx.android.synthetic.main.fragment_text.*
 
 /**
@@ -54,10 +53,10 @@ class TextFragment : Fragment() {
         Log.d("TextFragment", "$text onViewCreated")
         fragmentTag.text = text
         pushFragment.setOnClickListener {
-            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
+//            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
         }
         popFragment.setOnClickListener {
-            parentNavigationFragment()?.popFragment { }
+//            parentNavigationFragment()?.popFragment { }
         }
         startActivity.setOnClickListener {
             startActivityForResult(Intent(context, ResultActivity::class.java), 1)
@@ -73,7 +72,7 @@ class TextFragment : Fragment() {
             dialogFragment.show(fragmentManager, "bottomSheetFragment")
         }
         startSettingsFragment.setOnClickListener {
-            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
+//            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
         }
     }
 
@@ -126,7 +125,4 @@ class TextFragment : Fragment() {
         Log.d("TextFragment", "$text onDetach")
         super.onDetach()
     }
-
-    private fun parentNavigationFragment(): NavigationFragment? =
-            parentFragment as? NavigationFragment
 }
