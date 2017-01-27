@@ -17,16 +17,16 @@ import java.util.*
  * User: zuzik
  * Date: 12/24/16
  */
-class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
+class PagerNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
 
     companion object {
 
         private val KEY_PATH = "KEY_PATH"
 
-        fun create(path: List<String>): ModelPagerNavigationFragment {
+        fun create(path: List<String>): PagerNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_PATH, ArrayList(path))
-            val fragment = ModelPagerNavigationFragment()
+            val fragment = PagerNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -34,16 +34,16 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
 
     private var path: List<String> = emptyList()
     private var lastSavedState: State? = null
-    private var container: ModelNavigationFragmentContainer? = null
+    private var container: NavigationFragmentContainer? = null
     lateinit private var viewPager: ViewPager
-    private var adapter: ModelNavigationFragmentPagerAdapter? = null
+    private var adapter: NavigationFragmentPagerAdapter? = null
 
-    override val model: Model<ModelFragmentFactory>?
+    override val model: Model<FragmentFactory>?
         get() = container?.model
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        container = context as? ModelNavigationFragmentContainer ?: throw RuntimeException("$context must implement ${ModelNavigationFragmentContainer::class.simpleName}")
+        container = context as? NavigationFragmentContainer ?: throw RuntimeException("$context must implement ${NavigationFragmentContainer::class.simpleName}")
     }
 
     override fun onDetach() {
@@ -83,7 +83,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
         model?.removeListener(listener)
     }
 
-    private fun update(node: Node<ModelFragmentFactory>) {
+    private fun update(node: Node<FragmentFactory>) {
         node.findNode(path)?.let { currentNode ->
             val newState = State(currentNode.currentChildTag, currentNode.children.map { it.tag })
             if (newState == lastSavedState) {
@@ -92,7 +92,7 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
             lastSavedState = newState
 
             if (adapter == null) {
-                adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, currentNode, path)
+                adapter = NavigationFragmentPagerAdapter(childFragmentManager, currentNode, path)
                 viewPager.adapter = adapter
             } else {
                 adapter?.node = currentNode
@@ -103,8 +103,8 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
         }
     }
 
-    val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
-        override fun invoke(state: Node<ModelFragmentFactory>) {
+    val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
+        override fun invoke(state: Node<FragmentFactory>) {
             update(state)
         }
     }

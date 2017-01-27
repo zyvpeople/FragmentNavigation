@@ -17,16 +17,16 @@ import java.util.*
  * Date: 12/22/16
  */
 
-class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFragmentFactory> {
+class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
 
     companion object {
 
         private val KEY_PATH = "KEY_PATH"
 
-        fun create(path: List<String>): ModelListNavigationFragment {
+        fun create(path: List<String>): ListNavigationFragment {
             val bundle = Bundle()
             bundle.putSerializable(KEY_PATH, ArrayList(path))
-            val fragment = ModelListNavigationFragment()
+            val fragment = ListNavigationFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -34,14 +34,14 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
 
     private var path: List<String> = emptyList()
     private var lastSavedState: State? = null
-    private var container: ModelNavigationFragmentContainer? = null
+    private var container: NavigationFragmentContainer? = null
 
-    override val model: Model<ModelFragmentFactory>?
+    override val model: Model<FragmentFactory>?
         get() = container?.model
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        container = context as? ModelNavigationFragmentContainer ?: throw RuntimeException("$context must implement ${ModelNavigationFragmentContainer::class.simpleName}")
+        container = context as? NavigationFragmentContainer ?: throw RuntimeException("$context must implement ${NavigationFragmentContainer::class.simpleName}")
     }
 
     override fun onDetach() {
@@ -50,7 +50,7 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_model_list_navigation, container, false)
+        return inflater?.inflate(R.layout.fragment_list_navigation, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
         model?.removeListener(listener)
     }
 
-    private fun update(node: Node<ModelFragmentFactory>) {
+    private fun update(node: Node<FragmentFactory>) {
         node.findNode(path)?.let { currentNode ->
             val newState = State(currentNode.currentChildTag, currentNode.children.map { it.tag })
             if (newState == lastSavedState) {
@@ -117,8 +117,8 @@ class ModelListNavigationFragment : Fragment(), ModelNavigationFragment<ModelFra
 
     private fun fragments(): List<Fragment> = (childFragmentManager.fragments ?: emptyList()).filterNotNull()
 
-    val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
-        override fun invoke(state: Node<ModelFragmentFactory>) {
+    val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
+        override fun invoke(state: Node<FragmentFactory>) {
             update(state)
         }
     }

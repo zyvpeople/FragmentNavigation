@@ -6,15 +6,15 @@ import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.ModelListener
 import com.develop.zuzik.fragmentnavigation.model.Node
 import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentPlaceholder
-import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
-import com.develop.zuzik.fragmentnavigation.model.fragment.ModelNavigationFragmentContainer
+import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.model.fragment.NavigationFragmentContainer
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
+class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
 
     private data class FullPath(val path: List<String>, val tag: String)
 
-    override val model: Model<ModelFragmentFactory>
+    override val model: Model<FragmentFactory>
         get() = app.model
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
         }
         add.setOnClickListener {
             fullPath()?.let {
-                model.add(Node(it.tag, ModelTextFragmentFactory(it.tag), null, mutableListOf()), it.path)
+                model.add(Node(it.tag, TextFragmentFactory(it.tag), null, mutableListOf()), it.path)
             }
         }
         remove.setOnClickListener {
@@ -62,11 +62,11 @@ class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
         super.onStop()
     }
 
-    private fun update(node: Node<ModelFragmentFactory>) {
+    private fun update(node: Node<FragmentFactory>) {
         path.text = currentNodePath("", node)
     }
 
-    private fun currentNodePath(path: String, node: Node<ModelFragmentFactory>): String {
+    private fun currentNodePath(path: String, node: Node<FragmentFactory>): String {
         val newPath = "$path:${node.tag}"
         val currentNode = node.children.firstOrNull { it.tag == node.currentChildTag }
         return if (currentNode != null) {
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {
         }
     }
 
-    val listener: ModelListener<ModelFragmentFactory> = object : ModelListener<ModelFragmentFactory> {
-        override fun invoke(state: Node<ModelFragmentFactory>) {
+    val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
+        override fun invoke(state: Node<FragmentFactory>) {
             update(state)
         }
     }

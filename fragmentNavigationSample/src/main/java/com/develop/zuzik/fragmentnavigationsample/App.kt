@@ -2,7 +2,7 @@ package com.develop.zuzik.fragmentnavigationsample
 
 import android.app.Application
 import com.develop.zuzik.fragmentnavigation.model.Model
-import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
+import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentFactory
 import com.develop.zuzik.fragmentnavigation.model.fragment.builder.FragmentModelBuilder
 import com.develop.zuzik.fragmentnavigation.model.fragment.builder.list
 import com.develop.zuzik.fragmentnavigation.model.fragment.builder.pager
@@ -13,7 +13,7 @@ import com.develop.zuzik.fragmentnavigation.model.fragment.builder.pager
  */
 class App : Application() {
 
-    lateinit var model: Model<ModelFragmentFactory>
+    lateinit var model: Model<FragmentFactory>
         private set
 
     override fun onCreate() {
@@ -21,16 +21,18 @@ class App : Application() {
         model = FragmentModelBuilder()
                 .pager("a1", "b1") {
                     pager("b1", "c1") {
-                        child("c1", ModelTextFragmentFactory("c1"))
-                        child("c2", ModelTextFragmentFactory("c2"))
+                        list("c1", "f1") {
+                            child("f1", TextFragmentFactory("f1"))
+                            child("f2", TextFragmentFactory("f2"))
+                        }
                     }
                     list("b2", "d1") {
-                        child("d1", ModelTextFragmentFactory("d1"))
-                        child("d2", ModelTextFragmentFactory("d2"))
+                        child("d1", TextFragmentFactory("d1"))
+                        child("d2", TextFragmentFactory("d2"))
                     }
                     pager("b3", "e1") {
-                        child("e1", ModelTextFragmentFactory("e1"))
-                        child("e2", ModelTextFragmentFactory("e2"))
+                        child("e1", TextFragmentFactory("e1"))
+                        child("e2", TextFragmentFactory("e2"))
                     }
                 }
     }

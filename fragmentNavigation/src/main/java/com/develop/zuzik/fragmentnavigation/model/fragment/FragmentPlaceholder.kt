@@ -8,7 +8,7 @@ import com.develop.zuzik.fragmentnavigation.model.Model
  * User: zuzik
  * Date: 1/5/17
  */
-class FragmentPlaceholder(private val model: Model<ModelFragmentFactory>,
+class FragmentPlaceholder(private val model: Model<FragmentFactory>,
                           private val fragmentManager: FragmentManager,
                           @IdRes private val placeholderResId: Int) {
 

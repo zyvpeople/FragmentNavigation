@@ -13,9 +13,9 @@ import java.util.*
  * Date: 12/24/16
  */
 
-internal class ModelNavigationFragmentPagerAdapter(
+internal class NavigationFragmentPagerAdapter(
         fragmentManager: FragmentManager,
-        var node: Node<ModelFragmentFactory>?,
+        var node: Node<FragmentFactory>?,
         val path: List<String>) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val cachedFragments = HashMap<String, Fragment>()

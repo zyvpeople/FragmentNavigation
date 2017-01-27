@@ -7,6 +7,6 @@ import java.io.Serializable
  * User: zuzik
  * Date: 1/21/17
  */
-interface ModelFragmentFactory : Serializable {
+interface FragmentFactory : Serializable {
     fun create(path: List<String>): Fragment
 }

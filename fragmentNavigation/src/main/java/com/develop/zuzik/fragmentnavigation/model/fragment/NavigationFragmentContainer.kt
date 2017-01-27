@@ -6,6 +6,6 @@ import com.develop.zuzik.fragmentnavigation.model.Model
  * User: zuzik
  * Date: 1/21/17
  */
-interface ModelNavigationFragmentContainer {
-    val model: Model<ModelFragmentFactory>
+interface NavigationFragmentContainer {
+    val model: Model<FragmentFactory>
 }
