@@ -8,7 +8,6 @@ import com.develop.zuzik.fragmentnavigation.model.Node
 import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentPlaceholder
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelFragmentFactory
 import com.develop.zuzik.fragmentnavigation.model.fragment.ModelNavigationFragmentContainer
-import com.develop.zuzik.fragmentnavigation.model.fragment.ModelRootNavigationFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ModelNavigationFragmentContainer {

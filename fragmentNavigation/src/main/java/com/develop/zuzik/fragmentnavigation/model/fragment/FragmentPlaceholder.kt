@@ -13,11 +13,11 @@ class FragmentPlaceholder(private val model: Model<ModelFragmentFactory>,
                           @IdRes private val placeholderResId: Int) {
 
     fun show() {
-        val existedFragment = fragmentManager.findFragmentById(placeholderResId)
-        if (existedFragment == null) {
+        val tag = model.state.tag
+        if (fragmentManager.findFragmentByTag(tag) == null) {
             fragmentManager
                     .beginTransaction()
-                    .add(placeholderResId, ModelRootNavigationFragment())
+                    .add(placeholderResId, model.state.value.create(listOf(tag)), tag)
                     .commitNow()
         }
     }

@@ -33,11 +33,10 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     }
 
     private var path: List<String> = emptyList()
-    //TODO: incorrect because child node can be changed and parent will update screen, need to check by children and current position
-    private var lastSavedCurrentNode: Node<ModelFragmentFactory>? = null
+    private var lastSavedState: State? = null
     private var container: ModelNavigationFragmentContainer? = null
     lateinit private var viewPager: ViewPager
-    lateinit private var adapter: ModelNavigationFragmentPagerAdapter
+    private var adapter: ModelNavigationFragmentPagerAdapter? = null
 
     override val model: Model<ModelFragmentFactory>?
         get() = container?.model
@@ -60,8 +59,6 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_pager_navigation, container, false)
         viewPager = view?.findViewById(R.id.viewPager) as ViewPager
-        adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, null, path)
-        viewPager.adapter = adapter
         return view
     }
 
@@ -86,8 +83,20 @@ class ModelPagerNavigationFragment : Fragment(), ModelNavigationFragment<ModelFr
 
     private fun update(node: Node<ModelFragmentFactory>) {
         node.findNode(path)?.let { currentNode ->
-            adapter.node = currentNode
-            adapter.notifyDataSetChanged()
+            val newState = State(currentNode.currentChildTag, currentNode.children.map { it.tag })
+            if (newState == lastSavedState) {
+                return
+            }
+            lastSavedState = newState
+
+            if (adapter == null) {
+                adapter = ModelNavigationFragmentPagerAdapter(childFragmentManager, currentNode, path)
+                viewPager.adapter = adapter
+            } else {
+                adapter?.node = currentNode
+            }
+
+            adapter?.notifyDataSetChanged()
             viewPager.setCurrentItem(currentNode.children.indexOfFirst { it.tag == currentNode.currentChildTag }, true)
         }
     }
