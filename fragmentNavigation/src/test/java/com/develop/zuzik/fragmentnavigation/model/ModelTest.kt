@@ -1,14 +1,17 @@
 package com.develop.zuzik.fragmentnavigation.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotSame
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.*
 
 /**
  * User: zuzik
  * Date: 1/17/17
  */
+//TODO: add test - add node save copy
 class ModelTest {
 
     private val model = Model<String>(
@@ -26,6 +29,58 @@ class ModelTest {
     fun setUp() {
         model.addListener(listener)
     }
+
+    //region State
+
+    @Test
+    fun stateReturnsCopy() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
+
+        val state1 = model.state
+        val state2 = model.state
+
+        assertEquals(expectedState, state1)
+        assertEquals(expectedState, state2)
+        assertNotSame(state1, state2)
+    }
+
+    @Test
+    fun listenerReceivesCopyOfState() {
+        val expectedState =
+                createParent("a1", "b2", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
+
+        val captorListener1 = ModelStateCaptorModelListener<String>()
+        val captorListener2 = ModelStateCaptorModelListener<String>()
+
+        model.addListener(captorListener1)
+        model.addListener(captorListener2)
+
+        model.goTo("b2", listOf("a1"))
+
+        val state1 = captorListener1.state
+        val state2 = captorListener2.state
+
+        assertEquals(expectedState, state1)
+        assertEquals(expectedState, state2)
+        assertNotSame(state1, state2)
+    }
+
+    //endregion
 
     //region Add
 
@@ -591,7 +646,7 @@ class ModelTest {
 
     //endregion
 
-    //region GoTO
+    //region GoTo
 
     @Test
     fun goToSetsCurrentNodeTagToRootNode() {
@@ -865,7 +920,7 @@ class ModelTest {
 
     //endregion
 
-    //region AddRemoveListener
+    //region Add Remove Listener
 
     @Test
     fun addListenerAddsMoreThanOneListener() {
@@ -939,4 +994,10 @@ class ModelTest {
             Node(tag, "", currentChildTag, children.toMutableList())
 
     private fun createChild(tag: String) = createParent(tag, null, listOf())
+
+    private class ModelStateCaptorModelListener<Value>(var state: Node<Value>? = null) : ModelListener<Value> {
+        override fun invoke(p1: Node<Value>) {
+            state = p1
+        }
+    }
 }

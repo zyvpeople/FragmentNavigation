@@ -8,9 +8,6 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Date: 1/17/17
  */
 //TODO: add test modelIsSerializable
-//TODO: add test - add node save copy
-//TODO: add test - state return copy
-//TODO: add test - listener take copy
 class Model<Value>(state: Node<Value>) : Serializable {
 
     private var _state = state.copy()
