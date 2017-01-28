@@ -1,6 +1,6 @@
 package com.develop.zuzik.fragmentnavigationsample
 
-import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
 
 /**
  * User: zuzik

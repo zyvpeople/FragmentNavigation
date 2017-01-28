@@ -1,41 +1,43 @@
 package com.develop.zuzik.fragmentnavigationsample
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.develop.zuzik.fragmentnavigation.model.Model
-import com.develop.zuzik.fragmentnavigation.model.ModelListener
-import com.develop.zuzik.fragmentnavigation.model.Node
-import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentPlaceholder
-import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentFactory
-import com.develop.zuzik.fragmentnavigation.model.fragment.NavigationFragmentContainer
+import android.util.Log
+import com.develop.zuzik.fragmentnavigation.scheme.Scheme
+import com.develop.zuzik.fragmentnavigation.scheme.SchemeListener
+import com.develop.zuzik.fragmentnavigation.scheme.Node
+import com.develop.zuzik.fragmentnavigation.fragment.FragmentSchemePlaceholder
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragmentContainer
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
 
     private data class FullPath(val path: List<String>, val tag: String)
 
-    override val model: Model<FragmentFactory>
-        get() = app.model
+    override val scheme: Scheme<FragmentFactory>
+        get() = app.scheme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        FragmentPlaceholder(model, supportFragmentManager, R.id.placeholder).show()
+        FragmentSchemePlaceholder(scheme, supportFragmentManager, R.id.placeholder).show()
 
         goTo.setOnClickListener {
             fullPath()?.let {
-                model.goTo(it.tag, it.path)
+                scheme.goTo(it.tag, it.path)
             }
         }
         add.setOnClickListener {
             fullPath()?.let {
-                model.add(Node(it.tag, TextFragmentFactory(it.tag), null, mutableListOf()), it.path)
+                scheme.add(Node(it.tag, TextFragmentFactory(it.tag), null, mutableListOf()), it.path)
             }
         }
         remove.setOnClickListener {
             fullPath()?.let {
-                model.remove(it.tag, it.path)
+                scheme.remove(it.tag, it.path)
             }
         }
     }
@@ -53,12 +55,12 @@ class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
 
     override fun onStart() {
         super.onStart()
-        model.addListener(listener)
-        update(model.state)
+        scheme.addListener(listener)
+        update(scheme.state)
     }
 
     override fun onStop() {
-        model.removeListener(listener)
+        scheme.removeListener(listener)
         super.onStop()
     }
 
@@ -76,45 +78,19 @@ class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
         }
     }
 
-    val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
+    val listener: SchemeListener<FragmentFactory> = object : SchemeListener<FragmentFactory> {
         override fun invoke(state: Node<FragmentFactory>) {
             update(state)
         }
     }
 
-    //    override fun onStart() {
-//        super.onStart()
-//        navigationFragment()?.goToFragment("list1")
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("MainActivity", "onActivityResult")
-//    }
-//
-//    private fun createScene() =
-//            SceneBuilder()
-//                    .pager {
-//                        single("single0", TextFragmentFactory("single0"))
-//                        list("list1") {
-//                            single("list1:single0", TextFragmentFactory("list1:single0"))
-//                        }
-//                        list("list2") {
-//                            single("list2:single0", TextFragmentFactory("list2:single0"))
-//                        }
-//                        pager("pager3") {
-//                            single("pager3:single0", TextFragmentFactory("pager3:single0"))
-//                            single("pager3:single1", TextFragmentFactory("pager3:single1"))
-//                            list("pager3:list2") {
-//                                single("pager3:list2:single0", TextFragmentFactory("pager3:list2:single0"))
-//                            }
-//                        }
-//                    }
-//
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("MainActivity", "onActivityResult")
+    }
+
+    //TODO: implement back button
 //    override fun onBackPressed() {
 //        navigationFragment()?.popFragment { super.onBackPressed() }
 //    }
-//
-//    fun navigationFragment() =
-//            scenePlaceholder.rootFragment() as? NavigationFragment
 }
