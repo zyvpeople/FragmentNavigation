@@ -17,7 +17,9 @@ class ModelTest {
                             createChild("c1"))),
                     createParent("b2", "c1", listOf(
                             createChild("c1"),
-                            createChild("c2"))))))
+                            createParent("c2", "d1", listOf(
+                                    createChild("d1"),
+                                    createChild("d2"))))))))
     private val listener: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
     @Before
@@ -35,7 +37,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2"))),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2"))))),
                         createChild("b3")))
 
         model.add(createChild("b3"), listOf("a1"))
@@ -51,7 +55,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2"))),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2"))))),
                         createChild("b3")))
 
         model.add(createChild("b3"), listOf("a1"))
@@ -59,7 +65,7 @@ class ModelTest {
     }
 
     @Test
-    fun addAddsNodeToNotRootNode() {
+    fun addAddsNodeToFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
@@ -67,7 +73,9 @@ class ModelTest {
                                 createChild("c2"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("c2"), listOf("a1", "b1"))
 
@@ -75,7 +83,7 @@ class ModelTest {
     }
 
     @Test
-    fun addCallsListenerIfAddsNodeToNotRootNode() {
+    fun addCallsListenerIfAddsNodeToFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
@@ -83,9 +91,47 @@ class ModelTest {
                                 createChild("c2"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("c2"), listOf("a1", "b1"))
+
+        verify(listener, only()).invoke(expectedState)
+    }
+
+    @Test
+    fun addAddsNodeToSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2"),
+                                        createChild("d3")))))))
+
+        model.add(createChild("d3"), listOf("a1", "b2", "c2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun addCallsListenerIfAddsNodeToSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2"),
+                                        createChild("d3")))))))
+
+        model.add(createChild("d3"), listOf("a1", "b2", "c2"))
 
         verify(listener, only()).invoke(expectedState)
     }
@@ -98,7 +144,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("c2"), listOf())
 
@@ -107,16 +155,9 @@ class ModelTest {
 
     @Test
     fun addDoesNotCallListenerIfPathEmpty() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createParent("b2", "c1", listOf(
-                                createChild("c1")))))
-
         model.add(createChild("c2"), listOf())
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -127,7 +168,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("b2"), listOf("a1"))
 
@@ -136,27 +179,22 @@ class ModelTest {
 
     @Test
     fun addDoesCallListenerIfAddNoteToRootNodeAndNodeAlreadyExists() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createParent("b2", "c1", listOf(
-                                createChild("c1")))))
-
         model.add(createChild("b2"), listOf("a1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
-    fun addDoesNotAddNodeToNotRootNodeIfNodeAlreadyExists() {
+    fun addDoesNotAddNodeToFirstLevelNestedNodeIfNodeAlreadyExists() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("c1"), listOf("a1", "b1"))
 
@@ -164,17 +202,34 @@ class ModelTest {
     }
 
     @Test
-    fun addDoesCallListenerIfAddNoteToNotRootNodeAndNodeAlreadyExists() {
+    fun addDoesNotCallListenerIfAddNoteToFirstLevelNestedAndNodeAlreadyExists() {
+        model.add(createChild("c1"), listOf("a1", "b1"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun addDoesNotAddNodeToSecondLevelNestedNodeIfNodeAlreadyExists() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
-                                createChild("c1")))))
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.add(createChild("c1"), listOf("a1", "b1"))
+        model.add(createChild("d1"), listOf("a1", "b2", "c2"))
 
-        verify(listener, never()).invoke(expectedState)
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun addDoesNotCallListenerIfAddNoteToSecondLevelNestedAndNodeAlreadyExists() {
+        model.add(createChild("d1"), listOf("a1", "b2", "c2"))
+
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -185,7 +240,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("b3"), listOf("b1"))
 
@@ -194,27 +251,22 @@ class ModelTest {
 
     @Test
     fun addDoesNotCallListenerIfAddNodeToNotExistedRootNode() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createParent("b2", "c1", listOf(
-                                createChild("c1")))))
-
         model.add(createChild("b3"), listOf("b1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
-    fun addDoesNotAddNodeToNotExistedNotRootNode() {
+    fun addDoesNotAddNodeToNotExistedFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.add(createChild("c2"), listOf("a1", "b3"))
 
@@ -222,17 +274,34 @@ class ModelTest {
     }
 
     @Test
-    fun addDoesNotCallListenerIfAddNodeToNotExistedNotRootNode() {
+    fun addDoesNotCallListenerIfAddNodeToNotExistedFirstLevelNestedNode() {
+        model.add(createChild("c2"), listOf("a1", "b3"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun addDoesNotAddNodeToNotExistedSecondLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
-                                createChild("c1")))))
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.add(createChild("c2"), listOf("a1", "b3"))
+        model.add(createChild("d3"), listOf("a1", "b2", "c3"))
 
-        verify(listener, never()).invoke(expectedState)
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun addDoesNotCallListenerIfAddNodeToNotExistedSecondLevelNestedNode() {
+        model.add(createChild("d3"), listOf("a1", "b2", "c3"))
+
+        verifyZeroInteractions(listener)
     }
 
     //endregion
@@ -271,7 +340,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("b2", listOf())
 
@@ -280,16 +351,9 @@ class ModelTest {
 
     @Test
     fun removeDoesNotCallListenerIfPathEmpty() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createParent("b2", "c1", listOf(
-                                createChild("c1")))))
-
         model.remove("b2", listOf())
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -300,7 +364,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("b3", listOf("a1"))
 
@@ -309,26 +375,22 @@ class ModelTest {
 
     @Test
     fun removeDoesNotCallListenerIfRemoveNodeFromRootNodeAndNodeDoesNotExist() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createChild("b2")))
-
         model.remove("b3", listOf("a1"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
-    fun removeDoesNotRemoveNodeFromNotRootNodeIfNodeDoesNotExist() {
+    fun removeDoesNotRemoveNodeFromFirstLevelNestedNodeIfNodeDoesNotExist() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("c2", listOf("a1", "b1"))
 
@@ -336,16 +398,34 @@ class ModelTest {
     }
 
     @Test
-    fun removeDoesNotCallListenerIfRemoveNodeFromNotRootNodeAndNodeDoesNotExist() {
+    fun removeDoesNotCallListenerIfRemoveNodeFromFirstLevelNestedNodeAndNodeDoesNotExist() {
+        model.remove("c2", listOf("a1", "b1"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun removeDoesNotRemoveNodeFromSecondLevelNestedNodeIfNodeDoesNotExist() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.remove("c2", listOf("a1", "b1"))
+        model.remove("d3", listOf("a1", "b2", "c2"))
 
-        verify(listener, never()).invoke(expectedState)
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeDoesNotCallListenerIfRemoveNodeFromSecondLevelNestedNodeAndNodeDoesNotExist() {
+        model.remove("d3", listOf("a1", "b2", "c2"))
+
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -356,7 +436,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("b2", listOf("a2"))
 
@@ -365,26 +447,22 @@ class ModelTest {
 
     @Test
     fun removeDoesNotCallListenerIfRemoveNodeFromNotExistedRootNode() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createChild("b2")))
-
         model.remove("b2", listOf("a2"))
 
-        verify(listener, never()).invoke(expectedState)
+        verifyZeroInteractions(listener)
     }
 
     @Test
-    fun removeDoesNotRemoveNodeFromNotExistedNotRootNode() {
+    fun removeDoesNotRemoveNodeFromNotExistedFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("c1", listOf("a1", "b3"))
 
@@ -392,16 +470,34 @@ class ModelTest {
     }
 
     @Test
-    fun removeDoesNotCallListenerIfRemoveNodeFromNotExistedNotRootNode() {
+    fun removeDoesNotCallListenerIfRemoveNodeFromNotExistedFirstLevelNestedNode() {
+        model.remove("c1", listOf("a1", "b3"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun removeDoesNotRemoveNodeFromNotExistedSecondLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.remove("c1", listOf("a1", "b3"))
+        model.remove("11", listOf("a1", "b2", "c3"))
 
-        verify(listener, never()).invoke(expectedState)
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeDoesNotCallListenerIfRemoveNodeFromNotExistedSecondLevelNestedNode() {
+        model.remove("11", listOf("a1", "b2", "c3"))
+
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -410,7 +506,9 @@ class ModelTest {
                 createParent("a1", null, listOf(
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("b1", listOf("a1"))
 
@@ -430,13 +528,15 @@ class ModelTest {
     }
 
     @Test
-    fun removeSetsNullToCurrentNodeTagIfRemoveCurrentNodeFromNotRootNode() {
+    fun removeSetsNullToCurrentNodeTagIfRemoveCurrentNodeFromFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", null, listOf(
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.remove("c1", listOf("a1", "b2"))
 
@@ -444,7 +544,7 @@ class ModelTest {
     }
 
     @Test
-    fun removeDoesNotSetNullToCurrentNodeTagIfRemoveNotCurrentNodeFromNotRootNode() {
+    fun removeDoesNotSetNullToCurrentNodeTagIfRemoveNotCurrentNodeFromFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
@@ -453,6 +553,38 @@ class ModelTest {
                                 createChild("c1")))))
 
         model.remove("c2", listOf("a1", "b2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeSetsNullToCurrentNodeTagIfRemoveCurrentNodeFromSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", null, listOf(
+                                        createChild("d2")))))))
+
+        model.remove("d1", listOf("a1", "b2", "c2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun removeDoesNotSetNullToCurrentNodeTagIfRemoveNotCurrentNodeFromSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1")))))))
+
+        model.remove("d2", listOf("a1", "b2", "c2"))
 
         assertEquals(expectedState, model.state)
     }
@@ -469,7 +601,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("b2", listOf("a1"))
 
@@ -484,7 +618,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("b2", listOf("a1"))
 
@@ -492,14 +628,16 @@ class ModelTest {
     }
 
     @Test
-    fun goToSetsCurrentNodeTagToNotRootNode() {
+    fun goToSetsCurrentNodeTagToFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", "c1", listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("c1", listOf("a1", "b1"))
 
@@ -507,16 +645,52 @@ class ModelTest {
     }
 
     @Test
-    fun goToCallsListenerIfSetCurrentNodeTagToNotRootNode() {
+    fun goToCallsListenerIfSetCurrentNodeTagToFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", "c1", listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("c1", listOf("a1", "b1"))
+
+        verify(listener, only()).invoke(expectedState)
+    }
+
+    @Test
+    fun goToSetsCurrentNodeTagToSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d2", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
+
+        model.goTo("d2", listOf("a1", "b2", "c2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun goToCallsListenerIfSetCurrentNodeTagToSecondLevelNestedNode() {
+        val expectedState =
+                createParent("a1", "b1", listOf(
+                        createParent("b1", null, listOf(
+                                createChild("c1"))),
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d2", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
+
+        model.goTo("d2", listOf("a1", "b2", "c2"))
 
         verify(listener, only()).invoke(expectedState)
     }
@@ -529,7 +703,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("c1", listOf())
 
@@ -538,12 +714,6 @@ class ModelTest {
 
     @Test
     fun goToDoesNotCallListenerWhenPathIsEmpty() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createChild("b2")))
-
         model.goTo("c1", listOf())
 
         verifyZeroInteractions(listener)
@@ -557,7 +727,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("b3", listOf("a1"))
 
@@ -566,26 +738,22 @@ class ModelTest {
 
     @Test
     fun goToDoesNotCallListenerIfSetCurrentNodeToRootNodeIfNodeDoesNotExist() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createChild("b2")))
-
         model.goTo("b3", listOf("a1"))
 
         verifyZeroInteractions(listener)
     }
 
     @Test
-    fun goToDoesNotSetCurrentNodeToNotRootNodeIfNodeDoesNotExist() {
+    fun goToDoesNotSetCurrentNodeToFirstLevelNestedNodeIfNodeDoesNotExist() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.goTo("c2", listOf("a1", "b1"))
 
@@ -593,14 +761,32 @@ class ModelTest {
     }
 
     @Test
-    fun goToDoesNotCallListenerIfSetCurrentNodeToNotRootNodeIfNodeDoesNotExist() {
+    fun goToDoesNotCallListenerIfSetCurrentNodeToFirstLevelNestedNodeIfNodeDoesNotExist() {
+        model.goTo("c2", listOf("a1", "b1"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun goToDoesNotSetCurrentNodeToSecondLevelNestedNodeIfNodeDoesNotExist() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.goTo("c2", listOf("a1", "b1"))
+        model.goTo("d3", listOf("a1", "b2", "c2"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun goToDoesNotCallListenerIfSetCurrentNodeToSecondLevelNestedNodeIfNodeDoesNotExist() {
+        model.goTo("d3", listOf("a1", "b2", "c2"))
 
         verifyZeroInteractions(listener)
     }
@@ -613,50 +799,66 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.remove("b2", listOf("a2"))
+        model.goTo("b2", listOf("a2"))
 
         assertEquals(expectedState, model.state)
     }
 
     @Test
     fun goToDoesNotCallListenerIfSetCurrentNodeToNotExistedRootNode() {
-        val expectedState =
-                createParent("a1", "b1", listOf(
-                        createParent("b1", null, listOf(
-                                createChild("c1"))),
-                        createChild("b2")))
-
-        model.remove("b2", listOf("a2"))
+        model.goTo("b2", listOf("a2"))
 
         verifyZeroInteractions(listener)
     }
 
     @Test
-    fun goToDoesNotSetCurrentNodeIfSetCurrentNodeToNotExistedNotRootNode() {
+    fun goToDoesNotSetCurrentNodeIfSetCurrentNodeToNotExistedFirstLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.remove("c2", listOf("a1", "b1"))
+        model.goTo("c2", listOf("a1", "b3"))
 
         assertEquals(expectedState, model.state)
     }
 
     @Test
-    fun goToDoesNotCallListenerIfSetCurrentNodeToNotExistedNotRootNode() {
+    fun goToDoesNotCallListenerIfSetCurrentNodeToNotExistedFirstLevelNestedNode() {
+        model.goTo("c2", listOf("a1", "b3"))
+
+        verifyZeroInteractions(listener)
+    }
+
+    @Test
+    fun goToDoesNotSetCurrentNodeIfSetCurrentNodeToNotExistedSecondLevelNestedNode() {
         val expectedState =
                 createParent("a1", "b1", listOf(
                         createParent("b1", null, listOf(
                                 createChild("c1"))),
-                        createChild("b2")))
+                        createParent("b2", "c1", listOf(
+                                createChild("c1"),
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
-        model.remove("c2", listOf("a1", "b1"))
+        model.remove("d2", listOf("a1", "b2", "c3"))
+
+        assertEquals(expectedState, model.state)
+    }
+
+    @Test
+    fun goToDoesNotCallListenerIfSetCurrentNodeToNotExistedSecondLevelNestedNode() {
+        model.remove("d2", listOf("a1", "b2", "c3"))
 
         verifyZeroInteractions(listener)
     }
@@ -673,7 +875,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
         val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)
@@ -693,7 +897,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
 
         model.addListener(listener)
         model.addListener(listener)
@@ -711,7 +917,9 @@ class ModelTest {
                                 createChild("c1"))),
                         createParent("b2", "c1", listOf(
                                 createChild("c1"),
-                                createChild("c2")))))
+                                createParent("c2", "d1", listOf(
+                                        createChild("d1"),
+                                        createChild("d2")))))))
         val listener2: ModelListener<String> = mock(ModelListener::class.java) as ModelListener<String>
 
         model.addListener(listener)

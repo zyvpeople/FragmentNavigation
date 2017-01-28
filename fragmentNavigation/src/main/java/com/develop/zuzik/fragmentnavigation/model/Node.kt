@@ -39,7 +39,7 @@ class Node<Value>(tag: String,
                                     .firstOrNull { it.tag == path[1] }
                             else -> children
                                     .filter { it.tag == path[1] }
-                                    .map { it.findNode(path.slice(2..path.size - 1)) }
+                                    .map { it.findNode(path.slice(1..path.size - 1)) }
                                     .firstOrNull()
                         }
                     } else {

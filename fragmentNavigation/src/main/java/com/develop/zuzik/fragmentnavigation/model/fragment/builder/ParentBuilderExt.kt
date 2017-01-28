@@ -2,7 +2,7 @@ package com.develop.zuzik.fragmentnavigation.model.fragment.builder
 
 import com.develop.zuzik.fragmentnavigation.model.builder.ParentBuilder
 import com.develop.zuzik.fragmentnavigation.model.fragment.FragmentFactory
-import com.develop.zuzik.fragmentnavigation.model.fragment.NavigationFragmentFactory
+import com.develop.zuzik.fragmentnavigation.model.fragment.ListNavigationFragmentFactory
 import com.develop.zuzik.fragmentnavigation.model.fragment.PagerNavigationFragmentFactory
 
 /**
@@ -11,7 +11,7 @@ import com.develop.zuzik.fragmentnavigation.model.fragment.PagerNavigationFragme
  */
 
 fun ParentBuilder<FragmentFactory>.list(tag: String, currentNodeTag: String?, addChildren: ParentBuilder<FragmentFactory>.() -> Unit) {
-    parent(tag, NavigationFragmentFactory(), currentNodeTag, addChildren)
+    parent(tag, ListNavigationFragmentFactory(), currentNodeTag, addChildren)
 }
 
 fun ParentBuilder<FragmentFactory>.pager(tag: String, currentNodeTag: String?, addChildren: ParentBuilder<FragmentFactory>.() -> Unit) {

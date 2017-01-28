@@ -148,4 +148,23 @@ class ModelBuilderTest {
 
     fun parent(tag: String, value: String, currentNodeTag: String?, children: List<Node<String>>) =
             Node<String>(tag, value, currentNodeTag, children.toMutableList())
+
+    @Test
+    fun bug() {
+        val model = ModelBuilder<String>()
+                .parent("a1", "a1", "b1") {
+                    parent("b1", "b1", "f2") {
+                        child("f2", "f2")
+                        parent("c1", "c1", "f1") {
+                            child("f1", "f1")
+                        }
+                    }
+                }
+
+        val expectedNode =
+                parent("c1", "c1", "f1", listOf(
+                        child("f1", "f1")))
+
+        assertEquals(expectedNode, model.state.findNode(listOf("a1", "b1", "c1")))
+    }
 }

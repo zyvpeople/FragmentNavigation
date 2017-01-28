@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream
  */
 class NodeTest {
 
+    //region serializable
+
     @Test
     fun nodeIsSerializable() {
         val node =
@@ -37,6 +39,10 @@ class NodeTest {
         }
     }
 
+    //endregion
+
+    //region hasChild
+
     @Test
     fun hasChildReturnsTrueIfNodeHasChildWithEqualTag() {
         val node =
@@ -58,6 +64,10 @@ class NodeTest {
 
         assertFalse(node.hasChild("b3"))
     }
+
+    //endregion
+
+    //region findNode
 
     @Test
     fun findNodeReturnsNullIfPathIsEmpty() {
@@ -111,7 +121,7 @@ class NodeTest {
     }
 
     @Test
-    fun findNodeReturnsNotRootNodeIfPathRefersToExistedNotRootNode() {
+    fun findNodeReturnsFirstLevelNestedNodeIfPathRefersToExistedFirstLevelNestedNode() {
         val node =
                 Node("a1", "a1Value", "b1", mutableListOf(
                         Node("b1", "b1Value", null, mutableListOf()),
@@ -131,7 +141,7 @@ class NodeTest {
     }
 
     @Test
-    fun findNodeReturnsNullIfPathRefersToNotExistedNotRootNode() {
+    fun findNodeReturnsNullIfPathRefersToNotExistedFirstLevelNestedNode() {
         val node =
                 Node("a1", "a1Value", "b1", mutableListOf(
                         Node("b1", "b1Value", null, mutableListOf()),
@@ -143,4 +153,72 @@ class NodeTest {
 
         assertNull(node.findNode(listOf("a1", "b3")))
     }
+
+    @Test
+    fun findNodeReturnsSecondLevelNestedNodeIfPathRefersToExistedSecondLevelNestedNode() {
+        val node =
+                Node("a1", "a1Value", "b1", mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf(
+                                Node("c1", "c1Value", null, mutableListOf()),
+                                Node("c2", "c2Value", null, mutableListOf())
+                        ))
+                ))
+
+        val expectedNode =
+                Node("c2", "c2Value", null, mutableListOf())
+
+        assertEquals(expectedNode, node.findNode(listOf("a1", "b2", "c2")))
+    }
+
+    @Test
+    fun findNodeReturnsNullIfPathRefersToNotExistedSecondLevelNestedNode() {
+        val node =
+                Node("a1", "a1Value", "b1", mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf(
+                                Node("c1", "c1Value", null, mutableListOf()),
+                                Node("c2", "c2Value", null, mutableListOf())
+                        ))
+                ))
+
+        assertNull(node.findNode(listOf("a1", "b2", "c3")))
+    }
+
+    @Test
+    fun findNodeReturnsThirdLevelNestedNodeIfPathRefersToExistedThirdLevelNestedNode() {
+        val node =
+                Node("a1", "a1Value", "b1", mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf(
+                                Node("c1", "c1Value", null, mutableListOf()),
+                                Node("c2", "c2Value", null, mutableListOf(
+                                        Node("d1", "d1Value", null, mutableListOf())
+                                ))
+                        ))
+                ))
+
+        val expectedNode =
+                Node("d1", "d1Value", null, mutableListOf())
+
+        assertEquals(expectedNode, node.findNode(listOf("a1", "b2", "c2", "d1")))
+    }
+
+    @Test
+    fun findNodeReturnsNullIfPathRefersToNotExistedThirdLevelNestedNode() {
+        val node =
+                Node("a1", "a1Value", "b1", mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf(
+                                Node("c1", "c1Value", null, mutableListOf()),
+                                Node("c2", "c2Value", null, mutableListOf(
+                                        Node("d1", "d1Value", null, mutableListOf())
+                                ))
+                        ))
+                ))
+
+        assertNull(node.findNode(listOf("a1", "b2", "c2", "d2")))
+    }
+
+    //endregion
 }
