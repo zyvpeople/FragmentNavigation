@@ -34,14 +34,14 @@ internal class NavigationFragmentPagerAdapter(
     }
 
     override fun destroyItem(container: ViewGroup?, position: Int, fragment: Any?) {
-        tagForFragment(fragment)?.let {
+        tagForFragment(fragment as? Fragment)?.let {
             cachedFragments.remove(it)
         }
         super.destroyItem(container, position, fragment)
     }
 
     override fun getItemPosition(fragment: Any?): Int {
-        val tagForFragment = tagForFragment(fragment)
+        val tagForFragment = tagForFragment(fragment as? Fragment)
         val childWithTagExists = node?.children?.firstOrNull { it.tag == tagForFragment } != null
         return if (childWithTagExists) {
             super.getItemPosition(fragment)
@@ -50,11 +50,9 @@ internal class NavigationFragmentPagerAdapter(
         }
     }
 
-    private fun tagForFragment(fragment: Any?): String? {
-        val childTagForFragment = cachedFragments
-                .entries
-                .firstOrNull { it.value === fragment }
-                ?.key
-        return childTagForFragment
-    }
+    private fun tagForFragment(fragment: Fragment?) =
+            cachedFragments
+                    .entries
+                    .firstOrNull { it.value === fragment }
+                    ?.key
 }

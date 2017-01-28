@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.develop.zuzik.fragmentnavigation.model.fragment.NavigationFragment
 import kotlinx.android.synthetic.main.fragment_text.*
 
 /**
@@ -31,6 +32,8 @@ class TextFragment : Fragment() {
     }
 
     private var text = ""
+    private val parentNavigationFragment: NavigationFragment?
+        get() = parentFragment as? NavigationFragment
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -53,10 +56,11 @@ class TextFragment : Fragment() {
         Log.d("TextFragment", "$text onViewCreated")
         fragmentTag.text = text
         pushFragment.setOnClickListener {
-//            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), TextFragmentFactory(nextFragmentTitle.text.toString()))
+            val text = nextFragmentTitle.text.toString()
+            parentNavigationFragment?.push(text, TextFragmentFactory(text))
         }
         popFragment.setOnClickListener {
-//            parentNavigationFragment()?.popFragment { }
+            parentNavigationFragment?.pop()
         }
         startActivity.setOnClickListener {
             startActivityForResult(Intent(context, ResultActivity::class.java), 1)
@@ -72,7 +76,7 @@ class TextFragment : Fragment() {
             dialogFragment.show(fragmentManager, "bottomSheetFragment")
         }
         startSettingsFragment.setOnClickListener {
-//            parentNavigationFragment()?.pushFragment(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
+            parentNavigationFragment?.push(nextFragmentTitle.text.toString(), SettingsFragmentFactory())
         }
     }
 

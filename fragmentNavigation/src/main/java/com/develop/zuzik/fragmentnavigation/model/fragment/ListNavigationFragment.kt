@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exception.InterfaceNotImplementedException
 import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.ModelListener
 import com.develop.zuzik.fragmentnavigation.model.Node
+import com.develop.zuzik.fragmentnavigation.model.fragment.model.add
 import java.util.*
 
 /**
@@ -17,7 +19,7 @@ import java.util.*
  * Date: 12/22/16
  */
 
-class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
+class ListNavigationFragment : Fragment(), NavigationFragment {
 
     companion object {
 
@@ -36,12 +38,12 @@ class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
     private var lastSavedState: State? = null
     private var container: NavigationFragmentContainer? = null
 
-    override val model: Model<FragmentFactory>?
+    private val model: Model<FragmentFactory>?
         get() = container?.model
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        container = context as? NavigationFragmentContainer ?: throw RuntimeException("$context must implement ${NavigationFragmentContainer::class.simpleName}")
+        container = context as? NavigationFragmentContainer ?: throw InterfaceNotImplementedException(context!!, NavigationFragmentContainer::class.java)
     }
 
     override fun onDetach() {
@@ -49,28 +51,23 @@ class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
         super.onDetach()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_list_navigation, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        path = arguments.getSerializable(KEY_PATH) as List<String>
     }
+
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater?.inflate(R.layout.fragment_list_navigation, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        path = arguments.getSerializable(KEY_PATH) as List<String>
-        subscribeOnModel()
-    }
-
-    override fun onDestroyView() {
-        unsubscribeFromModel()
-        super.onDestroyView()
-    }
-
-    private fun subscribeOnModel() {
         model?.addListener(listener)
         model?.state?.let { update(it) }
     }
 
-    private fun unsubscribeFromModel() {
+    override fun onDestroyView() {
         model?.removeListener(listener)
+        super.onDestroyView()
     }
 
     private fun update(node: Node<FragmentFactory>) {
@@ -86,11 +83,9 @@ class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
             val removeFragmentsOfRemovedNodes = {
                 fragments().map { it.tag }
                         .subtract(currentNode.children.map { it.tag })
-                        .forEach {
-                            childFragmentManager.findFragmentByTag(it)?.let {
-                                transaction.remove(it)
-                            }
-                        }
+                        .map { childFragmentManager.findFragmentByTag(it) }
+                        .filterNotNull()
+                        .forEach { transaction.remove(it) }
             }
 
             val attachFragmentForCurrentNodeAndDetachAnother = {
@@ -116,6 +111,29 @@ class ListNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
     }
 
     private fun fragments(): List<Fragment> = (childFragmentManager.fragments ?: emptyList()).filterNotNull()
+
+    //region NavigationFragment
+
+    override fun push(tag: String, factory: FragmentFactory) {
+        model?.add(tag, factory, path)
+        model?.goTo(tag, path)
+    }
+
+    override fun pop() {
+        model?.let { model ->
+            model.state.findNode(path)?.let { node ->
+                val children = node.children
+                children.getOrNull(children.size - 2)?.let {
+                    model.goTo(it.tag, path)
+                }
+                children.getOrNull(children.size - 1)?.let {
+                    model.remove(it.tag, path)
+                }
+            }
+        }
+    }
+
+    //endregion
 
     val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
         override fun invoke(state: Node<FragmentFactory>) {

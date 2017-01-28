@@ -8,16 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
+import com.develop.zuzik.fragmentnavigation.exception.InterfaceNotImplementedException
 import com.develop.zuzik.fragmentnavigation.model.Model
 import com.develop.zuzik.fragmentnavigation.model.ModelListener
 import com.develop.zuzik.fragmentnavigation.model.Node
+import com.develop.zuzik.fragmentnavigation.model.fragment.model.add
 import java.util.*
 
 /**
  * User: zuzik
  * Date: 12/24/16
  */
-class PagerNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> {
+class PagerNavigationFragment : Fragment(), NavigationFragment {
 
     companion object {
 
@@ -35,15 +37,15 @@ class PagerNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> 
     private var path: List<String> = emptyList()
     private var lastSavedState: State? = null
     private var container: NavigationFragmentContainer? = null
-    lateinit private var viewPager: ViewPager
+    private var viewPager: ViewPager? = null
     private var adapter: NavigationFragmentPagerAdapter? = null
 
-    override val model: Model<FragmentFactory>?
+    private val model: Model<FragmentFactory>?
         get() = container?.model
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        container = context as? NavigationFragmentContainer ?: throw RuntimeException("$context must implement ${NavigationFragmentContainer::class.simpleName}")
+        container = context as? NavigationFragmentContainer ?: throw InterfaceNotImplementedException(context!!, NavigationFragmentContainer::class.java)
     }
 
     override fun onDetach() {
@@ -59,28 +61,20 @@ class PagerNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_pager_navigation, container, false)
         viewPager = view?.findViewById(R.id.viewPager) as ViewPager
-        viewPager.addOnPageChangeListener(onPageChangeListener)
+        viewPager?.addOnPageChangeListener(onPageChangeListener)
         return view
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        subscribeOnModel()
-    }
-
-    override fun onDestroyView() {
-        viewPager.removeOnPageChangeListener(onPageChangeListener)
-        unsubscribeFromModel()
-        super.onDestroyView()
-    }
-
-    private fun subscribeOnModel() {
         model?.addListener(listener)
         model?.state?.let { update(it) }
     }
 
-    private fun unsubscribeFromModel() {
+    override fun onDestroyView() {
         model?.removeListener(listener)
+        viewPager?.removeOnPageChangeListener(onPageChangeListener)
+        super.onDestroyView()
     }
 
     private fun update(node: Node<FragmentFactory>) {
@@ -93,15 +87,39 @@ class PagerNavigationFragment : Fragment(), NavigationFragment<FragmentFactory> 
 
             if (adapter == null) {
                 adapter = NavigationFragmentPagerAdapter(childFragmentManager, currentNode, path)
-                viewPager.adapter = adapter
+                viewPager?.adapter = adapter
             } else {
                 adapter?.node = currentNode
             }
 
             adapter?.notifyDataSetChanged()
-            viewPager.setCurrentItem(currentNode.children.indexOfFirst { it.tag == currentNode.currentChildTag }, true)
+            viewPager?.setCurrentItem(currentNode.children.indexOfFirst { it.tag == currentNode.currentChildTag }, true)
         }
     }
+
+    //TODO: duplicated with ListNavigationFragment
+    //region NavigationFragment
+
+    override fun push(tag: String, factory: FragmentFactory) {
+        model?.add(tag, factory, path)
+        model?.goTo(tag, path)
+    }
+
+    override fun pop() {
+        model?.let { model ->
+            model.state.findNode(path)?.let { node ->
+                val children = node.children
+                children.getOrNull(children.size - 2)?.let {
+                    model.goTo(it.tag, path)
+                }
+                children.getOrNull(children.size - 1)?.let {
+                    model.remove(it.tag, path)
+                }
+            }
+        }
+    }
+
+    //endregion
 
     val listener: ModelListener<FragmentFactory> = object : ModelListener<FragmentFactory> {
         override fun invoke(state: Node<FragmentFactory>) {
