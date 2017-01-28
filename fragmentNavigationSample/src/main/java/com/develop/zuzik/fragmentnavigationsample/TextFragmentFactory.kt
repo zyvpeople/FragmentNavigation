@@ -1,13 +1,11 @@
 package com.develop.zuzik.fragmentnavigationsample
 
-import com.develop.zuzik.fragmentnavigation.navigation.interfaces.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
 
 /**
  * User: zuzik
- * Date: 12/24/16
+ * Date: 1/21/17
  */
-
 class TextFragmentFactory(private val text: String) : FragmentFactory {
-
-    override fun create() = TextFragment.create(text)
+    override fun create(path: List<String>) = TextFragment.create(text)
 }

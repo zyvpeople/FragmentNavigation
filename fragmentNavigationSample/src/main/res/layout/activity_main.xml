@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/path"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        tools:text="Path"/>
+
     <FrameLayout
         android:id="@+id/placeholder"
         android:layout_width="match_parent"
@@ -23,47 +30,28 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/goToTag"
+            android:id="@+id/goTo"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:text="Go to tag"/>
+            android:text="Go to"/>
 
         <Button
-            android:id="@+id/addWithTag"
+            android:id="@+id/add"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:text="Add with tag"/>
+            android:text="Add"/>
 
         <Button
-            android:id="@+id/removeWithTag"
+            android:id="@+id/remove"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:text="Remove with tag"/>
+            android:text="Remove"/>
 
         <EditText
-            android:id="@+id/tagOfFragment"
+            android:id="@+id/fullPath"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Fragment tag"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/pushWithTag"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:text="Push with tag"/>
-
-        <Button
-            android:id="@+id/pop"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:text="Pop"/>
+            android:hint="Full path"/>
 
     </LinearLayout>
 </LinearLayout>
