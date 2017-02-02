@@ -21,6 +21,8 @@ internal class NavigationFragmentPagerAdapter(
 
     private val cachedFragments = HashMap<String, Fragment>()
 
+    fun findFragmentByTag(tag: String): Fragment? = cachedFragments[tag]
+
     override fun getItem(position: Int) =
             node?.children?.getOrNull(position)?.let { it.value.create(path + it.tag) }
 

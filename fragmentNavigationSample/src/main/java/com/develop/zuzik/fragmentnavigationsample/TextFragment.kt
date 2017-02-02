@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.develop.zuzik.fragmentnavigation.fragment.event.NavigateBackEvent
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.Event
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.EventHandler
 import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragment
 import kotlinx.android.synthetic.main.fragment_text.*
 
@@ -16,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_text.*
  * Date: 12/22/16
  */
 
-class TextFragment : Fragment() {
+class TextFragment : Fragment(), EventHandler {
 
     companion object {
 
@@ -60,7 +63,9 @@ class TextFragment : Fragment() {
             parentNavigationFragment?.push(text, TextFragmentFactory(text))
         }
         popFragment.setOnClickListener {
-            parentNavigationFragment?.pop()
+            parentNavigationFragment?.pop {
+                (context as? TextFragmentContainer)?.onTextFragmentFinish()
+            }
         }
         startActivity.setOnClickListener {
             startActivityForResult(Intent(context, ResultActivity::class.java), 1)
@@ -129,4 +134,19 @@ class TextFragment : Fragment() {
         Log.d("TextFragment", "$text onDetach")
         super.onDetach()
     }
+
+    //region EventHandler
+
+    override fun handleEvent(event: Event): Boolean {
+        return if (event is NavigateBackEvent) {
+            parentNavigationFragment?.pop {
+                (context as? TextFragmentContainer)?.onTextFragmentFinish()
+            }
+            true
+        } else {
+            false
+        }
+    }
+
+    //endregion
 }

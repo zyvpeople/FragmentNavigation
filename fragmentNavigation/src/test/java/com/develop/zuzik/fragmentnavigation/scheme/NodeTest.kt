@@ -221,4 +221,33 @@ class NodeTest {
     }
 
     //endregion
+
+    //region currentNode
+
+    @Test
+    fun currentNoteReturnsCurrentNodeIfCurrentNodeTagIsNotNull() {
+        val node =
+                Node("a1", "a1Value", "b2", mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf())
+                ))
+
+        val expectedNode = Node("b2", "b2Value", null, mutableListOf())
+
+        assertEquals(expectedNode, node.currentNode)
+    }
+
+    @Test
+    fun currentNoteReturnsNullIfCurrentNodeTagIsNull() {
+        val node =
+                Node("a1", "a1Value", null, mutableListOf(
+                        Node("b1", "b1Value", null, mutableListOf()),
+                        Node("b2", "b2Value", null, mutableListOf())
+                ))
+
+        assertNull(node.currentNode)
+    }
+
+    //endregion
+
 }

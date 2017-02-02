@@ -4,17 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.develop.zuzik.fragmentnavigation.fragment.FragmentSchemePlaceholder
+import com.develop.zuzik.fragmentnavigation.fragment.event.NavigateBackEvent
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.EventHandler
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragmentContainer
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.scheme.Node
 import com.develop.zuzik.fragmentnavigation.scheme.Scheme
 import com.develop.zuzik.fragmentnavigation.scheme.SchemeListener
-import com.develop.zuzik.fragmentnavigation.scheme.Node
-import com.develop.zuzik.fragmentnavigation.fragment.FragmentSchemePlaceholder
-import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
-import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragmentContainer
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
+class MainActivity : AppCompatActivity(), NavigationFragmentContainer, TextFragmentContainer {
 
     private data class FullPath(val path: List<String>, val tag: String)
+
+    lateinit var schemePlaceholder: FragmentSchemePlaceholder
 
     override val scheme: Scheme<FragmentFactory>
         get() = app.scheme
@@ -23,7 +27,8 @@ class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        FragmentSchemePlaceholder(scheme, supportFragmentManager, R.id.placeholder).show()
+        schemePlaceholder = FragmentSchemePlaceholder(scheme, supportFragmentManager, R.id.placeholder)
+        schemePlaceholder.show()
 
         goTo.setOnClickListener {
             fullPath()?.let {
@@ -68,6 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
         path.text = currentNodePath("", node)
     }
 
+    //todo to model
     private fun currentNodePath(path: String, node: Node<FragmentFactory>): String {
         val newPath = "$path:${node.tag}"
         val currentNode = node.children.firstOrNull { it.tag == node.currentChildTag }
@@ -89,8 +95,14 @@ class MainActivity : AppCompatActivity(), NavigationFragmentContainer {
         Log.d("MainActivity", "onActivityResult")
     }
 
-    //TODO: implement back button
-//    override fun onBackPressed() {
-//        navigationFragment()?.popFragment { super.onBackPressed() }
-//    }
+    override fun onBackPressed() {
+        val eventHandled = (schemePlaceholder.fragment as? EventHandler)?.handleEvent(NavigateBackEvent()) ?: false
+        if (!eventHandled) {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onTextFragmentFinish() {
+        finish()
+    }
 }

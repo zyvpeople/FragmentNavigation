@@ -8,5 +8,5 @@ import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
  */
 interface NavigationFragment {
     fun push(tag: String, factory: FragmentFactory)
-    fun pop()
+    fun pop(fail: () -> Unit)
 }

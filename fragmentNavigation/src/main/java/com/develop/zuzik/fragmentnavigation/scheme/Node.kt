@@ -22,6 +22,8 @@ class Node<Value>(tag: String,
         internal set
     var children = children.map { it.copy() }.toMutableList()
         internal set
+    val currentNode: Node<Value>?
+        get() = children.firstOrNull { it.tag == currentChildTag }
 
     fun copy(): Node<Value> = Node(tag, value, currentChildTag, children)
 
@@ -47,7 +49,6 @@ class Node<Value>(tag: String,
                     }
                 }
             }
-
 
     override fun equals(other: Any?) =
             if (other === this) {

@@ -9,20 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.develop.zuzik.fragmentnavigation.R
 import com.develop.zuzik.fragmentnavigation.exception.InterfaceNotImplementedException
-import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.Event
+import com.develop.zuzik.fragmentnavigation.fragment.interfaces.EventHandler
 import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragment
 import com.develop.zuzik.fragmentnavigation.fragment.interfaces.NavigationFragmentContainer
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.FragmentFactory
+import com.develop.zuzik.fragmentnavigation.fragment.scheme.add
+import com.develop.zuzik.fragmentnavigation.scheme.Node
 import com.develop.zuzik.fragmentnavigation.scheme.Scheme
 import com.develop.zuzik.fragmentnavigation.scheme.SchemeListener
-import com.develop.zuzik.fragmentnavigation.scheme.Node
-import com.develop.zuzik.fragmentnavigation.fragment.scheme.add
 import java.util.*
 
 /**
  * User: zuzik
  * Date: 12/24/16
  */
-class PagerNavigationFragment : Fragment(), NavigationFragment {
+class PagerNavigationFragment : Fragment(), NavigationFragment, EventHandler {
 
     companion object {
 
@@ -108,18 +110,37 @@ class PagerNavigationFragment : Fragment(), NavigationFragment {
         scheme?.goTo(tag, path)
     }
 
-    override fun pop() {
-        scheme?.let { model ->
-            model.state.findNode(path)?.let { node ->
+    override fun pop(fail: () -> Unit) {
+        val scheme = scheme
+        if (scheme != null) {
+            val node = scheme.state.findNode(path)
+            if (node != null) {
                 val children = node.children
-                children.getOrNull(children.size - 2)?.let {
-                    model.goTo(it.tag, path)
-                }
-                children.getOrNull(children.size - 1)?.let {
-                    model.remove(it.tag, path)
+                if (children.size > 1) {
+                    children.getOrNull(children.size - 2)?.let {
+                        scheme.goTo(it.tag, path)
+                    }
+                    children.getOrNull(children.size - 1)?.let {
+                        scheme.remove(it.tag, path)
+                    }
+                    return
                 }
             }
         }
+        fail()
+    }
+
+    //endregion
+
+    //region EventHandler
+
+    override fun handleEvent(event: Event): Boolean {
+        val eventHandler = scheme
+                ?.state
+                ?.findNode(path)
+                ?.currentChildTag
+                ?.let { adapter?.findFragmentByTag(it) } as? EventHandler
+        return eventHandler?.handleEvent(event) ?: false
     }
 
     //endregion
