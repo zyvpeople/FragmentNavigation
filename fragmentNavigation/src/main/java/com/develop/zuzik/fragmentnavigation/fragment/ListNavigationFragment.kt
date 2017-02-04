@@ -42,6 +42,9 @@ class ListNavigationFragment : Fragment(), NavigationFragment, EventHandler {
     private var path: List<String> = emptyList()
     private var lastSavedState: State? = null
     private var container: NavigationFragmentContainer? = null
+    private val createdState: (Node<FragmentFactory>) -> Unit = { update(it) }
+    private val destroyedState: (Node<FragmentFactory>) -> Unit = {}
+    private var currentState = destroyedState
 
     private val scheme: Scheme<FragmentFactory>?
         get() = container?.scheme
@@ -67,11 +70,14 @@ class ListNavigationFragment : Fragment(), NavigationFragment, EventHandler {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scheme?.addListener(listener)
-        scheme?.state?.let { update(it) }
+        currentState = createdState
+        scheme?.state?.let { currentState(it) }
     }
 
     override fun onDestroyView() {
+        currentState = destroyedState
         scheme?.removeListener(listener)
+        lastSavedState = null
         super.onDestroyView()
     }
 
@@ -161,7 +167,7 @@ class ListNavigationFragment : Fragment(), NavigationFragment, EventHandler {
 
     val listener: SchemeListener<FragmentFactory> = object : SchemeListener<FragmentFactory> {
         override fun invoke(state: Node<FragmentFactory>) {
-            update(state)
+            currentState(state)
         }
     }
 }

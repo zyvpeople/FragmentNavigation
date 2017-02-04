@@ -44,6 +44,9 @@ class PagerNavigationFragment : Fragment(), NavigationFragment, EventHandler {
     private var container: NavigationFragmentContainer? = null
     private var viewPager: ViewPager? = null
     private var adapter: NavigationFragmentPagerAdapter? = null
+    private val createdState: (Node<FragmentFactory>) -> Unit = { update(it) }
+    private val destroyedState: (Node<FragmentFactory>) -> Unit = {}
+    private var currentState = destroyedState
 
     private val scheme: Scheme<FragmentFactory>?
         get() = container?.scheme
@@ -73,12 +76,17 @@ class PagerNavigationFragment : Fragment(), NavigationFragment, EventHandler {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scheme?.addListener(listener)
-        scheme?.state?.let { update(it) }
+        currentState = createdState
+        scheme?.state?.let { currentState(it) }
     }
 
     override fun onDestroyView() {
-        scheme?.removeListener(listener)
+        currentState = destroyedState
         viewPager?.removeOnPageChangeListener(onPageChangeListener)
+        scheme?.removeListener(listener)
+        lastSavedState = null
+        viewPager = null
+        adapter = null
         super.onDestroyView()
     }
 
@@ -147,7 +155,7 @@ class PagerNavigationFragment : Fragment(), NavigationFragment, EventHandler {
 
     val listener: SchemeListener<FragmentFactory> = object : SchemeListener<FragmentFactory> {
         override fun invoke(state: Node<FragmentFactory>) {
-            update(state)
+            currentState(state)
         }
     }
 
